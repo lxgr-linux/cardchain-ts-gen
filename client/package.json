@@ -5,7 +5,9 @@
   "author": "Lxgr <lxgr@protonmail.com>",
   "license": "Apache-2.0",
   "licenses": [
-    "GPL-v3"
+    {
+      "type": "GPL-v3"
+    }
   ],
   "main": "lib/index.js",
   "publishConfig": {
