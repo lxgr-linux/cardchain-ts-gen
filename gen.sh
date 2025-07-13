@@ -13,6 +13,11 @@ buf generate --template buf.gen.ts-cosmos.yaml
 
 sed -i -E 's|packet_id\.||g' ${out_dir}/ibc.applications.fee.v1/rest.ts
 
+temp_file=`mktemp`
+jq ". + `cat package.json.tmpl`" \
+    $out_dir/package.json > $temp_file
+mv $temp_file $out_dir/package.json
+
 cd ${out_dir}
 npm i
 npm run build
