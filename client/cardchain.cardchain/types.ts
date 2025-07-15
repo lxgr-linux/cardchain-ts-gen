@@ -5,6 +5,7 @@ import { CardWithImage } from "../types/cardchain/cardchain/card_with_image"
 import { Council } from "../types/cardchain/cardchain/council"
 import { WrapClearResponse } from "../types/cardchain/cardchain/council"
 import { WrapHashResponse } from "../types/cardchain/cardchain/council"
+import { Parameter } from "../types/cardchain/cardchain/encounter"
 import { Encounter } from "../types/cardchain/cardchain/encounter"
 import { EncounterWithImage } from "../types/cardchain/cardchain/encounter_with_image"
 import { Image } from "../types/cardchain/cardchain/image"
@@ -36,6 +37,7 @@ export {
     Council,
     WrapClearResponse,
     WrapHashResponse,
+    Parameter,
     Encounter,
     EncounterWithImage,
     Image,

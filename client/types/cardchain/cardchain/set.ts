@@ -72,7 +72,7 @@ export interface Set {
   status: SetStatus;
   timeStamp: number;
   contributorsDistribution: AddrWithQuantity[];
-  Rarities: InnerRarities[];
+  rarities: InnerRarities[];
 }
 
 export interface InnerRarities {
@@ -97,7 +97,7 @@ function createBaseSet(): Set {
     status: 0,
     timeStamp: 0,
     contributorsDistribution: [],
-    Rarities: [],
+    rarities: [],
   };
 }
 
@@ -135,7 +135,7 @@ export const Set: MessageFns<Set> = {
     for (const v of message.contributorsDistribution) {
       AddrWithQuantity.encode(v!, writer.uint32(82).fork()).join();
     }
-    for (const v of message.Rarities) {
+    for (const v of message.rarities) {
       InnerRarities.encode(v!, writer.uint32(90).fork()).join();
     }
     return writer;
@@ -243,7 +243,7 @@ export const Set: MessageFns<Set> = {
             break;
           }
 
-          message.Rarities.push(InnerRarities.decode(reader, reader.uint32()));
+          message.rarities.push(InnerRarities.decode(reader, reader.uint32()));
           continue;
         }
       }
@@ -271,8 +271,8 @@ export const Set: MessageFns<Set> = {
       contributorsDistribution: globalThis.Array.isArray(object?.contributorsDistribution)
         ? object.contributorsDistribution.map((e: any) => AddrWithQuantity.fromJSON(e))
         : [],
-      Rarities: globalThis.Array.isArray(object?.Rarities)
-        ? object.Rarities.map((e: any) => InnerRarities.fromJSON(e))
+      rarities: globalThis.Array.isArray(object?.rarities)
+        ? object.rarities.map((e: any) => InnerRarities.fromJSON(e))
         : [],
     };
   },
@@ -309,8 +309,8 @@ export const Set: MessageFns<Set> = {
     if (message.contributorsDistribution?.length) {
       obj.contributorsDistribution = message.contributorsDistribution.map((e) => AddrWithQuantity.toJSON(e));
     }
-    if (message.Rarities?.length) {
-      obj.Rarities = message.Rarities.map((e) => InnerRarities.toJSON(e));
+    if (message.rarities?.length) {
+      obj.rarities = message.rarities.map((e) => InnerRarities.toJSON(e));
     }
     return obj;
   },
@@ -331,7 +331,7 @@ export const Set: MessageFns<Set> = {
     message.timeStamp = object.timeStamp ?? 0;
     message.contributorsDistribution = object.contributorsDistribution?.map((e) => AddrWithQuantity.fromPartial(e)) ||
       [];
-    message.Rarities = object.Rarities?.map((e) => InnerRarities.fromPartial(e)) || [];
+    message.rarities = object.rarities?.map((e) => InnerRarities.fromPartial(e)) || [];
     return message;
   },
 };

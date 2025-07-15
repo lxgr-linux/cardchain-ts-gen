@@ -9,23 +9,99 @@ import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
 
 export const protobufPackage = "cardchain.cardchain";
 
+export interface Parameter {
+  key: string;
+  value: string;
+}
+
 export interface Encounter {
   id: number;
   drawlist: number[];
   proven: boolean;
   owner: string;
-  parameters: { [key: string]: string };
+  parameters: Parameter[];
   imageId: number;
   name: string;
 }
 
-export interface Encounter_ParametersEntry {
-  key: string;
-  value: string;
+function createBaseParameter(): Parameter {
+  return { key: "", value: "" };
 }
 
+export const Parameter: MessageFns<Parameter> = {
+  encode(message: Parameter, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== "") {
+      writer.uint32(18).string(message.value);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): Parameter {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseParameter();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): Parameter {
+    return {
+      key: isSet(object.key) ? globalThis.String(object.key) : "",
+      value: isSet(object.value) ? globalThis.String(object.value) : "",
+    };
+  },
+
+  toJSON(message: Parameter): unknown {
+    const obj: any = {};
+    if (message.key !== "") {
+      obj.key = message.key;
+    }
+    if (message.value !== "") {
+      obj.value = message.value;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<Parameter>, I>>(base?: I): Parameter {
+    return Parameter.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<Parameter>, I>>(object: I): Parameter {
+    const message = createBaseParameter();
+    message.key = object.key ?? "";
+    message.value = object.value ?? "";
+    return message;
+  },
+};
+
 function createBaseEncounter(): Encounter {
-  return { id: 0, drawlist: [], proven: false, owner: "", parameters: {}, imageId: 0, name: "" };
+  return { id: 0, drawlist: [], proven: false, owner: "", parameters: [], imageId: 0, name: "" };
 }
 
 export const Encounter: MessageFns<Encounter> = {
@@ -44,9 +120,9 @@ export const Encounter: MessageFns<Encounter> = {
     if (message.owner !== "") {
       writer.uint32(34).string(message.owner);
     }
-    Object.entries(message.parameters).forEach(([key, value]) => {
-      Encounter_ParametersEntry.encode({ key: key as any, value }, writer.uint32(42).fork()).join();
-    });
+    for (const v of message.parameters) {
+      Parameter.encode(v!, writer.uint32(42).fork()).join();
+    }
     if (message.imageId !== 0) {
       writer.uint32(48).uint64(message.imageId);
     }
@@ -110,10 +186,7 @@ export const Encounter: MessageFns<Encounter> = {
             break;
           }
 
-          const entry5 = Encounter_ParametersEntry.decode(reader, reader.uint32());
-          if (entry5.value !== undefined) {
-            message.parameters[entry5.key] = entry5.value;
-          }
+          message.parameters.push(Parameter.decode(reader, reader.uint32()));
           continue;
         }
         case 6: {
@@ -147,12 +220,9 @@ export const Encounter: MessageFns<Encounter> = {
       drawlist: globalThis.Array.isArray(object?.drawlist) ? object.drawlist.map((e: any) => globalThis.Number(e)) : [],
       proven: isSet(object.proven) ? globalThis.Boolean(object.proven) : false,
       owner: isSet(object.owner) ? globalThis.String(object.owner) : "",
-      parameters: isObject(object.parameters)
-        ? Object.entries(object.parameters).reduce<{ [key: string]: string }>((acc, [key, value]) => {
-          acc[key] = String(value);
-          return acc;
-        }, {})
-        : {},
+      parameters: globalThis.Array.isArray(object?.parameters)
+        ? object.parameters.map((e: any) => Parameter.fromJSON(e))
+        : [],
       imageId: isSet(object.imageId) ? globalThis.Number(object.imageId) : 0,
       name: isSet(object.name) ? globalThis.String(object.name) : "",
     };
@@ -172,14 +242,8 @@ export const Encounter: MessageFns<Encounter> = {
     if (message.owner !== "") {
       obj.owner = message.owner;
     }
-    if (message.parameters) {
-      const entries = Object.entries(message.parameters);
-      if (entries.length > 0) {
-        obj.parameters = {};
-        entries.forEach(([k, v]) => {
-          obj.parameters[k] = v;
-        });
-      }
+    if (message.parameters?.length) {
+      obj.parameters = message.parameters.map((e) => Parameter.toJSON(e));
     }
     if (message.imageId !== 0) {
       obj.imageId = Math.round(message.imageId);
@@ -199,93 +263,9 @@ export const Encounter: MessageFns<Encounter> = {
     message.drawlist = object.drawlist?.map((e) => e) || [];
     message.proven = object.proven ?? false;
     message.owner = object.owner ?? "";
-    message.parameters = Object.entries(object.parameters ?? {}).reduce<{ [key: string]: string }>(
-      (acc, [key, value]) => {
-        if (value !== undefined) {
-          acc[key] = globalThis.String(value);
-        }
-        return acc;
-      },
-      {},
-    );
+    message.parameters = object.parameters?.map((e) => Parameter.fromPartial(e)) || [];
     message.imageId = object.imageId ?? 0;
     message.name = object.name ?? "";
-    return message;
-  },
-};
-
-function createBaseEncounter_ParametersEntry(): Encounter_ParametersEntry {
-  return { key: "", value: "" };
-}
-
-export const Encounter_ParametersEntry: MessageFns<Encounter_ParametersEntry> = {
-  encode(message: Encounter_ParametersEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.key !== "") {
-      writer.uint32(10).string(message.key);
-    }
-    if (message.value !== "") {
-      writer.uint32(18).string(message.value);
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): Encounter_ParametersEntry {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseEncounter_ParametersEntry();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 10) {
-            break;
-          }
-
-          message.key = reader.string();
-          continue;
-        }
-        case 2: {
-          if (tag !== 18) {
-            break;
-          }
-
-          message.value = reader.string();
-          continue;
-        }
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): Encounter_ParametersEntry {
-    return {
-      key: isSet(object.key) ? globalThis.String(object.key) : "",
-      value: isSet(object.value) ? globalThis.String(object.value) : "",
-    };
-  },
-
-  toJSON(message: Encounter_ParametersEntry): unknown {
-    const obj: any = {};
-    if (message.key !== "") {
-      obj.key = message.key;
-    }
-    if (message.value !== "") {
-      obj.value = message.value;
-    }
-    return obj;
-  },
-
-  create<I extends Exact<DeepPartial<Encounter_ParametersEntry>, I>>(base?: I): Encounter_ParametersEntry {
-    return Encounter_ParametersEntry.fromPartial(base ?? ({} as any));
-  },
-  fromPartial<I extends Exact<DeepPartial<Encounter_ParametersEntry>, I>>(object: I): Encounter_ParametersEntry {
-    const message = createBaseEncounter_ParametersEntry();
-    message.key = object.key ?? "";
-    message.value = object.value ?? "";
     return message;
   },
 };
@@ -311,10 +291,6 @@ function longToNumber(int64: { toString(): string }): number {
     throw new globalThis.Error("Value is smaller than Number.MIN_SAFE_INTEGER");
   }
   return num;
-}
-
-function isObject(value: any): boolean {
-  return typeof value === "object" && value !== null;
 }
 
 function isSet(value: any): boolean {

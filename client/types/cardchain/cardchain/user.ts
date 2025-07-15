@@ -110,8 +110,8 @@ export interface User {
   ownedCardSchemes: number[];
   ownedPrototypes: number[];
   cards: number[];
-  CouncilStatus: CouncilStatus;
-  ReportMatches: boolean;
+  councilStatus: CouncilStatus;
+  reportMatches: boolean;
   profileCard: number;
   airDrops: AirDrops | undefined;
   boosterPacks: BoosterPack[];
@@ -120,8 +120,8 @@ export interface User {
   votableCards: number[];
   votedCards: number[];
   earlyAccess: EarlyAccess | undefined;
-  OpenEncounters: number[];
-  WonEncounters: number[];
+  openEncounters: number[];
+  wonEncounters: number[];
 }
 
 export interface EarlyAccess {
@@ -153,8 +153,8 @@ function createBaseUser(): User {
     ownedCardSchemes: [],
     ownedPrototypes: [],
     cards: [],
-    CouncilStatus: 0,
-    ReportMatches: false,
+    councilStatus: 0,
+    reportMatches: false,
     profileCard: 0,
     airDrops: undefined,
     boosterPacks: [],
@@ -163,8 +163,8 @@ function createBaseUser(): User {
     votableCards: [],
     votedCards: [],
     earlyAccess: undefined,
-    OpenEncounters: [],
-    WonEncounters: [],
+    openEncounters: [],
+    wonEncounters: [],
   };
 }
 
@@ -188,11 +188,11 @@ export const User: MessageFns<User> = {
       writer.uint64(v);
     }
     writer.join();
-    if (message.CouncilStatus !== 0) {
-      writer.uint32(48).int32(message.CouncilStatus);
+    if (message.councilStatus !== 0) {
+      writer.uint32(48).int32(message.councilStatus);
     }
-    if (message.ReportMatches !== false) {
-      writer.uint32(56).bool(message.ReportMatches);
+    if (message.reportMatches !== false) {
+      writer.uint32(56).bool(message.reportMatches);
     }
     if (message.profileCard !== 0) {
       writer.uint32(64).uint64(message.profileCard);
@@ -223,12 +223,12 @@ export const User: MessageFns<User> = {
       EarlyAccess.encode(message.earlyAccess, writer.uint32(122).fork()).join();
     }
     writer.uint32(130).fork();
-    for (const v of message.OpenEncounters) {
+    for (const v of message.openEncounters) {
       writer.uint64(v);
     }
     writer.join();
     writer.uint32(138).fork();
-    for (const v of message.WonEncounters) {
+    for (const v of message.wonEncounters) {
       writer.uint64(v);
     }
     writer.join();
@@ -309,7 +309,7 @@ export const User: MessageFns<User> = {
             break;
           }
 
-          message.CouncilStatus = reader.int32() as any;
+          message.councilStatus = reader.int32() as any;
           continue;
         }
         case 7: {
@@ -317,7 +317,7 @@ export const User: MessageFns<User> = {
             break;
           }
 
-          message.ReportMatches = reader.bool();
+          message.reportMatches = reader.bool();
           continue;
         }
         case 8: {
@@ -406,7 +406,7 @@ export const User: MessageFns<User> = {
         }
         case 16: {
           if (tag === 128) {
-            message.OpenEncounters.push(longToNumber(reader.uint64()));
+            message.openEncounters.push(longToNumber(reader.uint64()));
 
             continue;
           }
@@ -414,7 +414,7 @@ export const User: MessageFns<User> = {
           if (tag === 130) {
             const end2 = reader.uint32() + reader.pos;
             while (reader.pos < end2) {
-              message.OpenEncounters.push(longToNumber(reader.uint64()));
+              message.openEncounters.push(longToNumber(reader.uint64()));
             }
 
             continue;
@@ -424,7 +424,7 @@ export const User: MessageFns<User> = {
         }
         case 17: {
           if (tag === 136) {
-            message.WonEncounters.push(longToNumber(reader.uint64()));
+            message.wonEncounters.push(longToNumber(reader.uint64()));
 
             continue;
           }
@@ -432,7 +432,7 @@ export const User: MessageFns<User> = {
           if (tag === 138) {
             const end2 = reader.uint32() + reader.pos;
             while (reader.pos < end2) {
-              message.WonEncounters.push(longToNumber(reader.uint64()));
+              message.wonEncounters.push(longToNumber(reader.uint64()));
             }
 
             continue;
@@ -459,8 +459,8 @@ export const User: MessageFns<User> = {
         ? object.ownedPrototypes.map((e: any) => globalThis.Number(e))
         : [],
       cards: globalThis.Array.isArray(object?.cards) ? object.cards.map((e: any) => globalThis.Number(e)) : [],
-      CouncilStatus: isSet(object.CouncilStatus) ? councilStatusFromJSON(object.CouncilStatus) : 0,
-      ReportMatches: isSet(object.ReportMatches) ? globalThis.Boolean(object.ReportMatches) : false,
+      councilStatus: isSet(object.councilStatus) ? councilStatusFromJSON(object.councilStatus) : 0,
+      reportMatches: isSet(object.reportMatches) ? globalThis.Boolean(object.reportMatches) : false,
       profileCard: isSet(object.profileCard) ? globalThis.Number(object.profileCard) : 0,
       airDrops: isSet(object.airDrops) ? AirDrops.fromJSON(object.airDrops) : undefined,
       boosterPacks: globalThis.Array.isArray(object?.boosterPacks)
@@ -475,11 +475,11 @@ export const User: MessageFns<User> = {
         ? object.votedCards.map((e: any) => globalThis.Number(e))
         : [],
       earlyAccess: isSet(object.earlyAccess) ? EarlyAccess.fromJSON(object.earlyAccess) : undefined,
-      OpenEncounters: globalThis.Array.isArray(object?.OpenEncounters)
-        ? object.OpenEncounters.map((e: any) => globalThis.Number(e))
+      openEncounters: globalThis.Array.isArray(object?.openEncounters)
+        ? object.openEncounters.map((e: any) => globalThis.Number(e))
         : [],
-      WonEncounters: globalThis.Array.isArray(object?.WonEncounters)
-        ? object.WonEncounters.map((e: any) => globalThis.Number(e))
+      wonEncounters: globalThis.Array.isArray(object?.wonEncounters)
+        ? object.wonEncounters.map((e: any) => globalThis.Number(e))
         : [],
     };
   },
@@ -498,11 +498,11 @@ export const User: MessageFns<User> = {
     if (message.cards?.length) {
       obj.cards = message.cards.map((e) => Math.round(e));
     }
-    if (message.CouncilStatus !== 0) {
-      obj.CouncilStatus = councilStatusToJSON(message.CouncilStatus);
+    if (message.councilStatus !== 0) {
+      obj.councilStatus = councilStatusToJSON(message.councilStatus);
     }
-    if (message.ReportMatches !== false) {
-      obj.ReportMatches = message.ReportMatches;
+    if (message.reportMatches !== false) {
+      obj.reportMatches = message.reportMatches;
     }
     if (message.profileCard !== 0) {
       obj.profileCard = Math.round(message.profileCard);
@@ -528,11 +528,11 @@ export const User: MessageFns<User> = {
     if (message.earlyAccess !== undefined) {
       obj.earlyAccess = EarlyAccess.toJSON(message.earlyAccess);
     }
-    if (message.OpenEncounters?.length) {
-      obj.OpenEncounters = message.OpenEncounters.map((e) => Math.round(e));
+    if (message.openEncounters?.length) {
+      obj.openEncounters = message.openEncounters.map((e) => Math.round(e));
     }
-    if (message.WonEncounters?.length) {
-      obj.WonEncounters = message.WonEncounters.map((e) => Math.round(e));
+    if (message.wonEncounters?.length) {
+      obj.wonEncounters = message.wonEncounters.map((e) => Math.round(e));
     }
     return obj;
   },
@@ -546,8 +546,8 @@ export const User: MessageFns<User> = {
     message.ownedCardSchemes = object.ownedCardSchemes?.map((e) => e) || [];
     message.ownedPrototypes = object.ownedPrototypes?.map((e) => e) || [];
     message.cards = object.cards?.map((e) => e) || [];
-    message.CouncilStatus = object.CouncilStatus ?? 0;
-    message.ReportMatches = object.ReportMatches ?? false;
+    message.councilStatus = object.councilStatus ?? 0;
+    message.reportMatches = object.reportMatches ?? false;
     message.profileCard = object.profileCard ?? 0;
     message.airDrops = (object.airDrops !== undefined && object.airDrops !== null)
       ? AirDrops.fromPartial(object.airDrops)
@@ -560,8 +560,8 @@ export const User: MessageFns<User> = {
     message.earlyAccess = (object.earlyAccess !== undefined && object.earlyAccess !== null)
       ? EarlyAccess.fromPartial(object.earlyAccess)
       : undefined;
-    message.OpenEncounters = object.OpenEncounters?.map((e) => e) || [];
-    message.WonEncounters = object.WonEncounters?.map((e) => e) || [];
+    message.openEncounters = object.openEncounters?.map((e) => e) || [];
+    message.wonEncounters = object.wonEncounters?.map((e) => e) || [];
     return message;
   },
 };

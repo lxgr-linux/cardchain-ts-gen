@@ -562,14 +562,14 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
    *
    * @tags Query
    * @name queryMatches
-   * @request GET:/DecentralCardGame/cardchain/cardchain/matches/{timestampDown}/{timestampUp}/{containsUsers}/{reporter}/{outcome}/{cardsPlayed}
+   * @request GET:/DecentralCardGame/cardchain/cardchain/matches
    */
-  queryMatches = (timestampDown: string, timestampUp: string, containsUsers: string, reporter: string, outcome: string, cardsPlayed: string,
-    query?: Record<string, any>,
+  queryMatches = (
+    query?: Omit<FlattenObject<SnakeCasedPropertiesDeep<ChangeProtoToJSPrimitives<QueryMatchesRequest>>>,"">,
     params: RequestParams = {},
   ) =>
     this.request<SnakeCasedPropertiesDeep<ChangeProtoToJSPrimitives<QueryMatchesResponse>>>({
-      path: `/DecentralCardGame/cardchain/cardchain/matches/${timestampDown}/${timestampUp}/${containsUsers}/${reporter}/${outcome}/${cardsPlayed}`,
+      path: `/DecentralCardGame/cardchain/cardchain/matches`,
       method: "GET",
       query: query,
       format: "json",
@@ -581,14 +581,14 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
    *
    * @tags Query
    * @name querySets
-   * @request GET:/DecentralCardGame/cardchain/cardchain/sets/{status}/{contributors}/{containsCards}/{owner}
+   * @request GET:/DecentralCardGame/cardchain/cardchain/sets/{status}
    */
-  querySets = (status: string, contributors: string, containsCards: string, owner: string,
-    query?: Record<string, any>,
+  querySets = (status: string,
+    query?: Omit<FlattenObject<SnakeCasedPropertiesDeep<ChangeProtoToJSPrimitives<QuerySetsRequest>>>,"status">,
     params: RequestParams = {},
   ) =>
     this.request<SnakeCasedPropertiesDeep<ChangeProtoToJSPrimitives<QuerySetsResponse>>>({
-      path: `/DecentralCardGame/cardchain/cardchain/sets/${status}/${contributors}/${containsCards}/${owner}`,
+      path: `/DecentralCardGame/cardchain/cardchain/sets/${status}`,
       method: "GET",
       query: query,
       format: "json",

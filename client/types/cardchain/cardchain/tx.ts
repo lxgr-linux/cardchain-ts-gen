@@ -9,6 +9,7 @@ import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
 import { Coin } from "../../cosmos/base/v1beta1/coin";
 import { CardRarity, cardRarityFromJSON, cardRarityToJSON } from "./card";
 import { Response, responseFromJSON, responseToJSON } from "./council";
+import { Parameter } from "./encounter";
 import { Outcome, outcomeFromJSON, outcomeToJSON } from "./match";
 import { Params } from "./params";
 import { SingleVote } from "./voting";
@@ -424,13 +425,8 @@ export interface MsgEncounterCreate {
   creator: string;
   name: string;
   drawlist: number[];
-  parameters: { [key: string]: string };
+  parameters: Parameter[];
   image: Uint8Array;
-}
-
-export interface MsgEncounterCreate_ParametersEntry {
-  key: string;
-  value: string;
 }
 
 export interface MsgEncounterCreateResponse {
@@ -6497,7 +6493,7 @@ export const MsgZealyConnectResponse: MessageFns<MsgZealyConnectResponse> = {
 };
 
 function createBaseMsgEncounterCreate(): MsgEncounterCreate {
-  return { creator: "", name: "", drawlist: [], parameters: {}, image: new Uint8Array(0) };
+  return { creator: "", name: "", drawlist: [], parameters: [], image: new Uint8Array(0) };
 }
 
 export const MsgEncounterCreate: MessageFns<MsgEncounterCreate> = {
@@ -6513,9 +6509,9 @@ export const MsgEncounterCreate: MessageFns<MsgEncounterCreate> = {
       writer.uint64(v);
     }
     writer.join();
-    Object.entries(message.parameters).forEach(([key, value]) => {
-      MsgEncounterCreate_ParametersEntry.encode({ key: key as any, value }, writer.uint32(34).fork()).join();
-    });
+    for (const v of message.parameters) {
+      Parameter.encode(v!, writer.uint32(34).fork()).join();
+    }
     if (message.image.length !== 0) {
       writer.uint32(42).bytes(message.image);
     }
@@ -6568,10 +6564,7 @@ export const MsgEncounterCreate: MessageFns<MsgEncounterCreate> = {
             break;
           }
 
-          const entry4 = MsgEncounterCreate_ParametersEntry.decode(reader, reader.uint32());
-          if (entry4.value !== undefined) {
-            message.parameters[entry4.key] = entry4.value;
-          }
+          message.parameters.push(Parameter.decode(reader, reader.uint32()));
           continue;
         }
         case 5: {
@@ -6596,12 +6589,9 @@ export const MsgEncounterCreate: MessageFns<MsgEncounterCreate> = {
       creator: isSet(object.creator) ? globalThis.String(object.creator) : "",
       name: isSet(object.name) ? globalThis.String(object.name) : "",
       drawlist: globalThis.Array.isArray(object?.drawlist) ? object.drawlist.map((e: any) => globalThis.Number(e)) : [],
-      parameters: isObject(object.parameters)
-        ? Object.entries(object.parameters).reduce<{ [key: string]: string }>((acc, [key, value]) => {
-          acc[key] = String(value);
-          return acc;
-        }, {})
-        : {},
+      parameters: globalThis.Array.isArray(object?.parameters)
+        ? object.parameters.map((e: any) => Parameter.fromJSON(e))
+        : [],
       image: isSet(object.image) ? bytesFromBase64(object.image) : new Uint8Array(0),
     };
   },
@@ -6617,14 +6607,8 @@ export const MsgEncounterCreate: MessageFns<MsgEncounterCreate> = {
     if (message.drawlist?.length) {
       obj.drawlist = message.drawlist.map((e) => Math.round(e));
     }
-    if (message.parameters) {
-      const entries = Object.entries(message.parameters);
-      if (entries.length > 0) {
-        obj.parameters = {};
-        entries.forEach(([k, v]) => {
-          obj.parameters[k] = v;
-        });
-      }
+    if (message.parameters?.length) {
+      obj.parameters = message.parameters.map((e) => Parameter.toJSON(e));
     }
     if (message.image.length !== 0) {
       obj.image = base64FromBytes(message.image);
@@ -6640,96 +6624,8 @@ export const MsgEncounterCreate: MessageFns<MsgEncounterCreate> = {
     message.creator = object.creator ?? "";
     message.name = object.name ?? "";
     message.drawlist = object.drawlist?.map((e) => e) || [];
-    message.parameters = Object.entries(object.parameters ?? {}).reduce<{ [key: string]: string }>(
-      (acc, [key, value]) => {
-        if (value !== undefined) {
-          acc[key] = globalThis.String(value);
-        }
-        return acc;
-      },
-      {},
-    );
+    message.parameters = object.parameters?.map((e) => Parameter.fromPartial(e)) || [];
     message.image = object.image ?? new Uint8Array(0);
-    return message;
-  },
-};
-
-function createBaseMsgEncounterCreate_ParametersEntry(): MsgEncounterCreate_ParametersEntry {
-  return { key: "", value: "" };
-}
-
-export const MsgEncounterCreate_ParametersEntry: MessageFns<MsgEncounterCreate_ParametersEntry> = {
-  encode(message: MsgEncounterCreate_ParametersEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.key !== "") {
-      writer.uint32(10).string(message.key);
-    }
-    if (message.value !== "") {
-      writer.uint32(18).string(message.value);
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): MsgEncounterCreate_ParametersEntry {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseMsgEncounterCreate_ParametersEntry();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 10) {
-            break;
-          }
-
-          message.key = reader.string();
-          continue;
-        }
-        case 2: {
-          if (tag !== 18) {
-            break;
-          }
-
-          message.value = reader.string();
-          continue;
-        }
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): MsgEncounterCreate_ParametersEntry {
-    return {
-      key: isSet(object.key) ? globalThis.String(object.key) : "",
-      value: isSet(object.value) ? globalThis.String(object.value) : "",
-    };
-  },
-
-  toJSON(message: MsgEncounterCreate_ParametersEntry): unknown {
-    const obj: any = {};
-    if (message.key !== "") {
-      obj.key = message.key;
-    }
-    if (message.value !== "") {
-      obj.value = message.value;
-    }
-    return obj;
-  },
-
-  create<I extends Exact<DeepPartial<MsgEncounterCreate_ParametersEntry>, I>>(
-    base?: I,
-  ): MsgEncounterCreate_ParametersEntry {
-    return MsgEncounterCreate_ParametersEntry.fromPartial(base ?? ({} as any));
-  },
-  fromPartial<I extends Exact<DeepPartial<MsgEncounterCreate_ParametersEntry>, I>>(
-    object: I,
-  ): MsgEncounterCreate_ParametersEntry {
-    const message = createBaseMsgEncounterCreate_ParametersEntry();
-    message.key = object.key ?? "";
-    message.value = object.value ?? "";
     return message;
   },
 };
@@ -8141,10 +8037,6 @@ function longToNumber(int64: { toString(): string }): number {
     throw new globalThis.Error("Value is smaller than Number.MIN_SAFE_INTEGER");
   }
   return num;
-}
-
-function isObject(value: any): boolean {
-  return typeof value === "object" && value !== null;
 }
 
 function isSet(value: any): boolean {

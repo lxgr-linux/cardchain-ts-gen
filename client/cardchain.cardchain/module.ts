@@ -66,6 +66,7 @@ import { CardWithImage as typeCardWithImage} from "./types"
 import { Council as typeCouncil} from "./types"
 import { WrapClearResponse as typeWrapClearResponse} from "./types"
 import { WrapHashResponse as typeWrapHashResponse} from "./types"
+import { Parameter as typeParameter} from "./types"
 import { Encounter as typeEncounter} from "./types"
 import { EncounterWithImage as typeEncounterWithImage} from "./types"
 import { Image as typeImage} from "./types"
@@ -1815,6 +1816,7 @@ class SDKModule {
 						Council: getStructure(typeCouncil.fromPartial({})),
 						WrapClearResponse: getStructure(typeWrapClearResponse.fromPartial({})),
 						WrapHashResponse: getStructure(typeWrapHashResponse.fromPartial({})),
+						Parameter: getStructure(typeParameter.fromPartial({})),
 						Encounter: getStructure(typeEncounter.fromPartial({})),
 						EncounterWithImage: getStructure(typeEncounterWithImage.fromPartial({})),
 						Image: getStructure(typeImage.fromPartial({})),
