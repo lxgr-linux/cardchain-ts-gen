@@ -6,9 +6,9 @@ import { QuerySpendableBalanceByDenomResponse } from "../types/cosmos/bank/v1bet
 import { QueryTotalSupplyResponse } from "../types/cosmos/bank/v1beta1/query";
 import { QuerySupplyOfResponse } from "../types/cosmos/bank/v1beta1/query";
 import { QueryParamsResponse } from "../types/cosmos/bank/v1beta1/query";
+import { QueryDenomsMetadataResponse } from "../types/cosmos/bank/v1beta1/query";
 import { QueryDenomMetadataResponse } from "../types/cosmos/bank/v1beta1/query";
 import { QueryDenomMetadataByQueryStringResponse } from "../types/cosmos/bank/v1beta1/query";
-import { QueryDenomsMetadataResponse } from "../types/cosmos/bank/v1beta1/query";
 import { QueryDenomOwnersResponse } from "../types/cosmos/bank/v1beta1/query";
 import { QueryDenomOwnersByQueryResponse } from "../types/cosmos/bank/v1beta1/query";
 import { QuerySendEnabledResponse } from "../types/cosmos/bank/v1beta1/query";
@@ -20,9 +20,9 @@ import { QuerySpendableBalanceByDenomRequest } from "../types/cosmos/bank/v1beta
 import { QueryTotalSupplyRequest } from "../types/cosmos/bank/v1beta1/query";
 import { QuerySupplyOfRequest } from "../types/cosmos/bank/v1beta1/query";
 import { QueryParamsRequest } from "../types/cosmos/bank/v1beta1/query";
+import { QueryDenomsMetadataRequest } from "../types/cosmos/bank/v1beta1/query";
 import { QueryDenomMetadataRequest } from "../types/cosmos/bank/v1beta1/query";
 import { QueryDenomMetadataByQueryStringRequest } from "../types/cosmos/bank/v1beta1/query";
-import { QueryDenomsMetadataRequest } from "../types/cosmos/bank/v1beta1/query";
 import { QueryDenomOwnersRequest } from "../types/cosmos/bank/v1beta1/query";
 import { QueryDenomOwnersByQueryRequest } from "../types/cosmos/bank/v1beta1/query";
 import { QuerySendEnabledRequest } from "../types/cosmos/bank/v1beta1/query";
@@ -350,11 +350,30 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     });
   
   /**
+   * QueryDenomsMetadata
+   *
+   * @tags Query
+   * @name queryDenomsMetadata
+   * @request GET:/cosmos/bank/v1beta1/denoms_metadata
+   */
+  queryDenomsMetadata = (
+    query?: Omit<FlattenObject<SnakeCasedPropertiesDeep<ChangeProtoToJSPrimitives<QueryDenomsMetadataRequest>>>,"">,
+    params: RequestParams = {},
+  ) =>
+    this.request<SnakeCasedPropertiesDeep<ChangeProtoToJSPrimitives<QueryDenomsMetadataResponse>>>({
+      path: `/cosmos/bank/v1beta1/denoms_metadata`,
+      method: "GET",
+      query: query,
+      format: "json",
+      ...params,
+    });
+  
+  /**
    * QueryDenomMetadata
    *
    * @tags Query
    * @name queryDenomMetadata
-   * @request GET:/cosmos/bank/v1beta1/denoms_metadata/{denom}
+   * @request GET:/cosmos/bank/v1beta1/denoms_metadata/{denom=**}
    */
   queryDenomMetadata = (denom: string,
     query?: Record<string, any>,
@@ -388,30 +407,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     });
   
   /**
-   * QueryDenomsMetadata
-   *
-   * @tags Query
-   * @name queryDenomsMetadata
-   * @request GET:/cosmos/bank/v1beta1/denoms_metadata
-   */
-  queryDenomsMetadata = (
-    query?: Omit<FlattenObject<SnakeCasedPropertiesDeep<ChangeProtoToJSPrimitives<QueryDenomsMetadataRequest>>>,"">,
-    params: RequestParams = {},
-  ) =>
-    this.request<SnakeCasedPropertiesDeep<ChangeProtoToJSPrimitives<QueryDenomsMetadataResponse>>>({
-      path: `/cosmos/bank/v1beta1/denoms_metadata`,
-      method: "GET",
-      query: query,
-      format: "json",
-      ...params,
-    });
-  
-  /**
    * QueryDenomOwners
    *
    * @tags Query
    * @name queryDenomOwners
-   * @request GET:/cosmos/bank/v1beta1/denom_owners/{denom}
+   * @request GET:/cosmos/bank/v1beta1/denom_owners/{denom=**}
    */
   queryDenomOwners = (denom: string,
     query?: Omit<FlattenObject<SnakeCasedPropertiesDeep<ChangeProtoToJSPrimitives<QueryDenomOwnersRequest>>>,"denom">,

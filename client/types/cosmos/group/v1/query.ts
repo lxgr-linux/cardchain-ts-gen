@@ -11,8 +11,6 @@ import { GroupInfo, GroupMember, GroupPolicyInfo, Proposal, TallyResult, Vote } 
 
 export const protobufPackage = "cosmos.group.v1";
 
-/** Since: cosmos-sdk 0.46 */
-
 /** QueryGroupInfoRequest is the Query/GroupInfo request type. */
 export interface QueryGroupInfoRequest {
   /** group_id is the unique ID of the group. */
@@ -203,21 +201,13 @@ export interface QueryTallyResultResponse {
   tally: TallyResult | undefined;
 }
 
-/**
- * QueryGroupsRequest is the Query/Groups request type.
- *
- * Since: cosmos-sdk 0.47.1
- */
+/** QueryGroupsRequest is the Query/Groups request type. */
 export interface QueryGroupsRequest {
   /** pagination defines an optional pagination for the request. */
   pagination: PageRequest | undefined;
 }
 
-/**
- * QueryGroupsResponse is the Query/Groups response type.
- *
- * Since: cosmos-sdk 0.47.1
- */
+/** QueryGroupsResponse is the Query/Groups response type. */
 export interface QueryGroupsResponse {
   /** `groups` is all the groups present in state. */
   groups: GroupInfo[];
@@ -2285,11 +2275,7 @@ export interface Query {
    * proposal itself.
    */
   TallyResult(request: QueryTallyResultRequest): Promise<QueryTallyResultResponse>;
-  /**
-   * Groups queries all groups in state.
-   *
-   * Since: cosmos-sdk 0.47.1
-   */
+  /** Groups queries all groups in state. */
   Groups(request: QueryGroupsRequest): Promise<QueryGroupsResponse>;
 }
 

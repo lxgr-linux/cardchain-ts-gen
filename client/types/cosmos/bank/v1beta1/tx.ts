@@ -36,11 +36,7 @@ export interface MsgMultiSend {
 export interface MsgMultiSendResponse {
 }
 
-/**
- * MsgUpdateParams is the Msg/UpdateParams request type.
- *
- * Since: cosmos-sdk 0.47
- */
+/** MsgUpdateParams is the Msg/UpdateParams request type. */
 export interface MsgUpdateParams {
   /** authority is the address that controls the module (defaults to x/gov unless overwritten). */
   authority: string;
@@ -55,8 +51,6 @@ export interface MsgUpdateParams {
 /**
  * MsgUpdateParamsResponse defines the response structure for executing a
  * MsgUpdateParams message.
- *
- * Since: cosmos-sdk 0.47
  */
 export interface MsgUpdateParamsResponse {
 }
@@ -67,8 +61,6 @@ export interface MsgUpdateParamsResponse {
  * Only entries to add/update/delete need to be included.
  * Existing SendEnabled entries that are not included in this
  * message are left unchanged.
- *
- * Since: cosmos-sdk 0.47
  */
 export interface MsgSetSendEnabled {
   /** authority is the address that controls the module. */
@@ -84,11 +76,7 @@ export interface MsgSetSendEnabled {
   useDefaultFor: string[];
 }
 
-/**
- * MsgSetSendEnabledResponse defines the Msg/SetSendEnabled response type.
- *
- * Since: cosmos-sdk 0.47
- */
+/** MsgSetSendEnabledResponse defines the Msg/SetSendEnabled response type. */
 export interface MsgSetSendEnabledResponse {
 }
 
@@ -615,8 +603,6 @@ export interface Msg {
   /**
    * UpdateParams defines a governance operation for updating the x/bank module parameters.
    * The authority is defined in the keeper.
-   *
-   * Since: cosmos-sdk 0.47
    */
   UpdateParams(request: MsgUpdateParams): Promise<MsgUpdateParamsResponse>;
   /**
@@ -624,8 +610,6 @@ export interface Msg {
    * on any number of Denoms. Only the entries to add or update should be
    * included. Entries that already exist in the store, but that aren't
    * included in this message, will be left unchanged.
-   *
-   * Since: cosmos-sdk 0.47
    */
   SetSendEnabled(request: MsgSetSendEnabled): Promise<MsgSetSendEnabledResponse>;
 }

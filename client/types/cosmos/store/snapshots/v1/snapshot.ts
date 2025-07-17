@@ -24,11 +24,7 @@ export interface Metadata {
   chunkHashes: Uint8Array[];
 }
 
-/**
- * SnapshotItem is an item contained in a rootmulti.Store snapshot.
- *
- * Since: cosmos-sdk 0.46
- */
+/** SnapshotItem is an item contained in a rootmulti.Store snapshot. */
 export interface SnapshotItem {
   store?: SnapshotStoreItem | undefined;
   iavl?: SnapshotIAVLItem | undefined;
@@ -36,20 +32,12 @@ export interface SnapshotItem {
   extensionPayload?: SnapshotExtensionPayload | undefined;
 }
 
-/**
- * SnapshotStoreItem contains metadata about a snapshotted store.
- *
- * Since: cosmos-sdk 0.46
- */
+/** SnapshotStoreItem contains metadata about a snapshotted store. */
 export interface SnapshotStoreItem {
   name: string;
 }
 
-/**
- * SnapshotIAVLItem is an exported IAVL node.
- *
- * Since: cosmos-sdk 0.46
- */
+/** SnapshotIAVLItem is an exported IAVL node. */
 export interface SnapshotIAVLItem {
   key: Uint8Array;
   value: Uint8Array;
@@ -59,21 +47,13 @@ export interface SnapshotIAVLItem {
   height: number;
 }
 
-/**
- * SnapshotExtensionMeta contains metadata about an external snapshotter.
- *
- * Since: cosmos-sdk 0.46
- */
+/** SnapshotExtensionMeta contains metadata about an external snapshotter. */
 export interface SnapshotExtensionMeta {
   name: string;
   format: number;
 }
 
-/**
- * SnapshotExtensionPayload contains payloads of an external snapshotter.
- *
- * Since: cosmos-sdk 0.46
- */
+/** SnapshotExtensionPayload contains payloads of an external snapshotter. */
 export interface SnapshotExtensionPayload {
   payload: Uint8Array;
 }

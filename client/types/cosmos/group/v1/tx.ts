@@ -19,8 +19,6 @@ import {
 
 export const protobufPackage = "cosmos.group.v1";
 
-/** Since: cosmos-sdk 0.46 */
-
 /** Exec defines modes of execution of a proposal on creation or on new vote. */
 export enum Exec {
   /**
@@ -232,17 +230,9 @@ export interface MsgSubmitProposal {
    * If so, proposers signatures are considered as Yes votes.
    */
   exec: Exec;
-  /**
-   * title is the title of the proposal.
-   *
-   * Since: cosmos-sdk 0.47
-   */
+  /** title is the title of the proposal. */
   title: string;
-  /**
-   * summary is the summary of the proposal.
-   *
-   * Since: cosmos-sdk 0.47
-   */
+  /** summary is the summary of the proposal. */
   summary: string;
 }
 

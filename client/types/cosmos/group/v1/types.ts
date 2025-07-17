@@ -12,8 +12,6 @@ import { Timestamp } from "../../../google/protobuf/timestamp";
 
 export const protobufPackage = "cosmos.group.v1";
 
-/** Since: cosmos-sdk 0.46 */
-
 /** VoteOption enumerates the valid vote options for a given proposal. */
 export enum VoteOption {
   /**
@@ -409,17 +407,9 @@ export interface Proposal {
   executorResult: ProposalExecutorResult;
   /** messages is a list of `sdk.Msg`s that will be executed if the proposal passes. */
   messages: Any[];
-  /**
-   * title is the title of the proposal
-   *
-   * Since: cosmos-sdk 0.47
-   */
+  /** title is the title of the proposal */
   title: string;
-  /**
-   * summary is a short summary of the proposal
-   *
-   * Since: cosmos-sdk 0.47
-   */
+  /** summary is a short summary of the proposal */
   summary: string;
 }
 

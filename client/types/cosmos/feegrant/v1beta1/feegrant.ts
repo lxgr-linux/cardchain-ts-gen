@@ -13,8 +13,6 @@ import { Coin } from "../../base/v1beta1/coin";
 
 export const protobufPackage = "cosmos.feegrant.v1beta1";
 
-/** Since: cosmos-sdk 0.43 */
-
 /**
  * BasicAllowance implements Allowance with a one-time grant of coins
  * that optionally expires. The grantee can use up to SpendLimit to cover fees.

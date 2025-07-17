@@ -14,7 +14,7 @@ export const protobufPackage = "cosmos.app.v1alpha1";
 export interface QueryConfigRequest {
 }
 
-/** QueryConfigRequest is the Query/Config response type. */
+/** QueryConfigResponse is the Query/Config response type. */
 export interface QueryConfigResponse {
   /** config is the current app config. */
   config: Config | undefined;
@@ -125,7 +125,11 @@ export const QueryConfigResponse: MessageFns<QueryConfigResponse> = {
 
 /** Query is the app module query service. */
 export interface Query {
-  /** Config returns the current app config. */
+  /**
+   * Config returns the current app config.
+   *
+   * @deprecated
+   */
   Config(request: QueryConfigRequest): Promise<QueryConfigResponse>;
 }
 

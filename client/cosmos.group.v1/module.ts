@@ -31,6 +31,7 @@ import { EventVote as typeEventVote} from "./types"
 import { EventExec as typeEventExec} from "./types"
 import { EventLeaveGroup as typeEventLeaveGroup} from "./types"
 import { EventProposalPruned as typeEventProposalPruned} from "./types"
+import { EventTallyError as typeEventTallyError} from "./types"
 import { Member as typeMember} from "./types"
 import { MemberRequest as typeMemberRequest} from "./types"
 import { ThresholdDecisionPolicy as typeThresholdDecisionPolicy} from "./types"
@@ -557,6 +558,7 @@ class SDKModule {
 						EventExec: getStructure(typeEventExec.fromPartial({})),
 						EventLeaveGroup: getStructure(typeEventLeaveGroup.fromPartial({})),
 						EventProposalPruned: getStructure(typeEventProposalPruned.fromPartial({})),
+						EventTallyError: getStructure(typeEventTallyError.fromPartial({})),
 						Member: getStructure(typeMember.fromPartial({})),
 						MemberRequest: getStructure(typeMemberRequest.fromPartial({})),
 						ThresholdDecisionPolicy: getStructure(typeThresholdDecisionPolicy.fromPartial({})),

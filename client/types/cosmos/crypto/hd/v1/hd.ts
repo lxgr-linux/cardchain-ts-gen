@@ -9,8 +9,6 @@ import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
 
 export const protobufPackage = "cosmos.crypto.hd.v1";
 
-/** Since: cosmos-sdk 0.46 */
-
 /** BIP44Params is used as path field in ledger item in Record. */
 export interface BIP44Params {
   /** purpose is a constant set to 44' (or 0x8000002C) following the BIP43 recommendation */

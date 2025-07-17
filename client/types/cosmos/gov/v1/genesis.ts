@@ -10,8 +10,6 @@ import { Deposit, DepositParams, Params, Proposal, TallyParams, Vote, VotingPara
 
 export const protobufPackage = "cosmos.gov.v1";
 
-/** Since: cosmos-sdk 0.46 */
-
 /** GenesisState defines the gov module's genesis state. */
 export interface GenesisState {
   /** starting_proposal_id is the ID of the starting proposal. */
@@ -49,11 +47,7 @@ export interface GenesisState {
   tallyParams:
     | TallyParams
     | undefined;
-  /**
-   * params defines all the paramaters of x/gov module.
-   *
-   * Since: cosmos-sdk 0.47
-   */
+  /** params defines all the paramaters of x/gov module. */
   params:
     | Params
     | undefined;
@@ -62,8 +56,6 @@ export interface GenesisState {
    * This is an immutable string set in genesis.
    * There are no amendments, to go outside of scope, just fork.
    * constitution is an immutable string in genesis for a chain builder to lay out their vision, ideas and ideals.
-   *
-   * Since: cosmos-sdk 0.50
    */
   constitution: string;
 }

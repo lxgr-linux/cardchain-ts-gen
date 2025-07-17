@@ -8,6 +8,7 @@ import { EventVote } from "../types/cosmos/group/v1/events"
 import { EventExec } from "../types/cosmos/group/v1/events"
 import { EventLeaveGroup } from "../types/cosmos/group/v1/events"
 import { EventProposalPruned } from "../types/cosmos/group/v1/events"
+import { EventTallyError } from "../types/cosmos/group/v1/events"
 import { Member } from "../types/cosmos/group/v1/types"
 import { MemberRequest } from "../types/cosmos/group/v1/types"
 import { ThresholdDecisionPolicy } from "../types/cosmos/group/v1/types"
@@ -32,6 +33,7 @@ export {
     EventExec,
     EventLeaveGroup,
     EventProposalPruned,
+    EventTallyError,
     Member,
     MemberRequest,
     ThresholdDecisionPolicy,

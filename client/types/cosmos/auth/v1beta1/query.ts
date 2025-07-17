@@ -12,21 +12,13 @@ import { BaseAccount, Params } from "./auth";
 
 export const protobufPackage = "cosmos.auth.v1beta1";
 
-/**
- * QueryAccountsRequest is the request type for the Query/Accounts RPC method.
- *
- * Since: cosmos-sdk 0.43
- */
+/** QueryAccountsRequest is the request type for the Query/Accounts RPC method. */
 export interface QueryAccountsRequest {
   /** pagination defines an optional pagination for the request. */
   pagination: PageRequest | undefined;
 }
 
-/**
- * QueryAccountsResponse is the response type for the Query/Accounts RPC method.
- *
- * Since: cosmos-sdk 0.43
- */
+/** QueryAccountsResponse is the response type for the Query/Accounts RPC method. */
 export interface QueryAccountsResponse {
   /** accounts are the existing accounts */
   accounts: Any[];
@@ -56,19 +48,11 @@ export interface QueryParamsResponse {
   params: Params | undefined;
 }
 
-/**
- * QueryModuleAccountsRequest is the request type for the Query/ModuleAccounts RPC method.
- *
- * Since: cosmos-sdk 0.46
- */
+/** QueryModuleAccountsRequest is the request type for the Query/ModuleAccounts RPC method. */
 export interface QueryModuleAccountsRequest {
 }
 
-/**
- * QueryModuleAccountsResponse is the response type for the Query/ModuleAccounts RPC method.
- *
- * Since: cosmos-sdk 0.46
- */
+/** QueryModuleAccountsResponse is the response type for the Query/ModuleAccounts RPC method. */
 export interface QueryModuleAccountsResponse {
   accounts: Any[];
 }
@@ -83,64 +67,36 @@ export interface QueryModuleAccountByNameResponse {
   account: Any | undefined;
 }
 
-/**
- * Bech32PrefixRequest is the request type for Bech32Prefix rpc method.
- *
- * Since: cosmos-sdk 0.46
- */
+/** Bech32PrefixRequest is the request type for Bech32Prefix rpc method. */
 export interface Bech32PrefixRequest {
 }
 
-/**
- * Bech32PrefixResponse is the response type for Bech32Prefix rpc method.
- *
- * Since: cosmos-sdk 0.46
- */
+/** Bech32PrefixResponse is the response type for Bech32Prefix rpc method. */
 export interface Bech32PrefixResponse {
   bech32Prefix: string;
 }
 
-/**
- * AddressBytesToStringRequest is the request type for AddressString rpc method.
- *
- * Since: cosmos-sdk 0.46
- */
+/** AddressBytesToStringRequest is the request type for AddressString rpc method. */
 export interface AddressBytesToStringRequest {
   addressBytes: Uint8Array;
 }
 
-/**
- * AddressBytesToStringResponse is the response type for AddressString rpc method.
- *
- * Since: cosmos-sdk 0.46
- */
+/** AddressBytesToStringResponse is the response type for AddressString rpc method. */
 export interface AddressBytesToStringResponse {
   addressString: string;
 }
 
-/**
- * AddressStringToBytesRequest is the request type for AccountBytes rpc method.
- *
- * Since: cosmos-sdk 0.46
- */
+/** AddressStringToBytesRequest is the request type for AccountBytes rpc method. */
 export interface AddressStringToBytesRequest {
   addressString: string;
 }
 
-/**
- * AddressStringToBytesResponse is the response type for AddressBytes rpc method.
- *
- * Since: cosmos-sdk 0.46
- */
+/** AddressStringToBytesResponse is the response type for AddressBytes rpc method. */
 export interface AddressStringToBytesResponse {
   addressBytes: Uint8Array;
 }
 
-/**
- * QueryAccountAddressByIDRequest is the request type for AccountAddressByID rpc method
- *
- * Since: cosmos-sdk 0.46.2
- */
+/** QueryAccountAddressByIDRequest is the request type for AccountAddressByID rpc method */
 export interface QueryAccountAddressByIDRequest {
   /**
    * Deprecated, use account_id instead
@@ -152,38 +108,22 @@ export interface QueryAccountAddressByIDRequest {
    * @deprecated
    */
   id: number;
-  /**
-   * account_id is the account number of the address to be queried.
-   *
-   * Since: cosmos-sdk 0.47
-   */
+  /** account_id is the account number of the address to be queried. */
   accountId: number;
 }
 
-/**
- * QueryAccountAddressByIDResponse is the response type for AccountAddressByID rpc method
- *
- * Since: cosmos-sdk 0.46.2
- */
+/** QueryAccountAddressByIDResponse is the response type for AccountAddressByID rpc method */
 export interface QueryAccountAddressByIDResponse {
   accountAddress: string;
 }
 
-/**
- * QueryAccountInfoRequest is the Query/AccountInfo request type.
- *
- * Since: cosmos-sdk 0.47
- */
+/** QueryAccountInfoRequest is the Query/AccountInfo request type. */
 export interface QueryAccountInfoRequest {
   /** address is the account address string. */
   address: string;
 }
 
-/**
- * QueryAccountInfoResponse is the Query/AccountInfo response type.
- *
- * Since: cosmos-sdk 0.47
- */
+/** QueryAccountInfoResponse is the Query/AccountInfo response type. */
 export interface QueryAccountInfoResponse {
   /** info is the account info which is represented by BaseAccount. */
   info: BaseAccount | undefined;
@@ -1371,51 +1311,25 @@ export interface Query {
    *
    * When called from another module, this query might consume a high amount of
    * gas if the pagination field is incorrectly set.
-   *
-   * Since: cosmos-sdk 0.43
    */
   Accounts(request: QueryAccountsRequest): Promise<QueryAccountsResponse>;
   /** Account returns account details based on address. */
   Account(request: QueryAccountRequest): Promise<QueryAccountResponse>;
-  /**
-   * AccountAddressByID returns account address based on account number.
-   *
-   * Since: cosmos-sdk 0.46.2
-   */
+  /** AccountAddressByID returns account address based on account number. */
   AccountAddressByID(request: QueryAccountAddressByIDRequest): Promise<QueryAccountAddressByIDResponse>;
   /** Params queries all parameters. */
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse>;
-  /**
-   * ModuleAccounts returns all the existing module accounts.
-   *
-   * Since: cosmos-sdk 0.46
-   */
+  /** ModuleAccounts returns all the existing module accounts. */
   ModuleAccounts(request: QueryModuleAccountsRequest): Promise<QueryModuleAccountsResponse>;
   /** ModuleAccountByName returns the module account info by module name */
   ModuleAccountByName(request: QueryModuleAccountByNameRequest): Promise<QueryModuleAccountByNameResponse>;
-  /**
-   * Bech32Prefix queries bech32Prefix
-   *
-   * Since: cosmos-sdk 0.46
-   */
+  /** Bech32Prefix queries bech32Prefix */
   Bech32Prefix(request: Bech32PrefixRequest): Promise<Bech32PrefixResponse>;
-  /**
-   * AddressBytesToString converts Account Address bytes to string
-   *
-   * Since: cosmos-sdk 0.46
-   */
+  /** AddressBytesToString converts Account Address bytes to string */
   AddressBytesToString(request: AddressBytesToStringRequest): Promise<AddressBytesToStringResponse>;
-  /**
-   * AddressStringToBytes converts Address string to bytes
-   *
-   * Since: cosmos-sdk 0.46
-   */
+  /** AddressStringToBytes converts Address string to bytes */
   AddressStringToBytes(request: AddressStringToBytesRequest): Promise<AddressStringToBytesResponse>;
-  /**
-   * AccountInfo queries account info which is common to all account types.
-   *
-   * Since: cosmos-sdk 0.47
-   */
+  /** AccountInfo queries account info which is common to all account types. */
   AccountInfo(request: QueryAccountInfoRequest): Promise<QueryAccountInfoResponse>;
 }
 

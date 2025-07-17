@@ -10,8 +10,6 @@ import { ConsensusParams } from "../../../tendermint/types/params";
 
 export const protobufPackage = "cosmos.consensus.v1";
 
-/** Since: cosmos-sdk 0.47 */
-
 /** QueryParamsRequest defines the request type for querying x/consensus parameters. */
 export interface QueryParamsRequest {
 }

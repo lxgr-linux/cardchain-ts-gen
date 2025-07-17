@@ -14,10 +14,11 @@ plugins:
       - json_names_for_fields=false
       - ts_proto_opt=snakeToCamel=true
       - ts_proto_opt=esModuleInterop=true
+      - ts_proto_opt=useAminoEncoding=true
       - ts_proto_out=.
 inputs:
   - git_repo: https://github.com/cosmos/cosmos-sdk.git
-    tag: v0.50.11
+    tag: v0.53.3
     subdir: proto
     depth: 30
   - git_repo: https://github.com/cosmos/ibc-go

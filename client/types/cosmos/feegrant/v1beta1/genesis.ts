@@ -10,8 +10,6 @@ import { Grant } from "./feegrant";
 
 export const protobufPackage = "cosmos.feegrant.v1beta1";
 
-/** Since: cosmos-sdk 0.43 */
-
 /** GenesisState contains a set of fee allowances, persisted from the store */
 export interface GenesisState {
   allowances: Grant[];

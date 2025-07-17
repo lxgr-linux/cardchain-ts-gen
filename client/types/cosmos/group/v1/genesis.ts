@@ -10,8 +10,6 @@ import { GroupInfo, GroupMember, GroupPolicyInfo, Proposal, Vote } from "./types
 
 export const protobufPackage = "cosmos.group.v1";
 
-/** Since: cosmos-sdk 0.46 */
-
 /** GenesisState defines the group module's genesis state. */
 export interface GenesisState {
   /**

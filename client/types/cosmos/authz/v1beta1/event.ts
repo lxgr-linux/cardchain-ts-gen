@@ -9,8 +9,6 @@ import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
 
 export const protobufPackage = "cosmos.authz.v1beta1";
 
-/** Since: cosmos-sdk 0.43 */
-
 /** EventGrant is emitted on Msg/Grant */
 export interface EventGrant {
   /** Msg type URL for which an autorization is granted */

@@ -17,6 +17,12 @@ export interface Module {
   moduleAccountPermissions: ModuleAccountPermission[];
   /** authority defines the custom module authority. If not set, defaults to the governance module. */
   authority: string;
+  /**
+   * enable_unordered_transactions determines whether unordered transactions should be supported or not.
+   * When true, unordered transactions will be validated and processed.
+   * When false, unordered transactions will be rejected.
+   */
+  enableUnorderedTransactions: boolean;
 }
 
 /** ModuleAccountPermission represents permissions for a module account. */
@@ -31,7 +37,7 @@ export interface ModuleAccountPermission {
 }
 
 function createBaseModule(): Module {
-  return { bech32Prefix: "", moduleAccountPermissions: [], authority: "" };
+  return { bech32Prefix: "", moduleAccountPermissions: [], authority: "", enableUnorderedTransactions: false };
 }
 
 export const Module: MessageFns<Module> = {
@@ -44,6 +50,9 @@ export const Module: MessageFns<Module> = {
     }
     if (message.authority !== "") {
       writer.uint32(26).string(message.authority);
+    }
+    if (message.enableUnorderedTransactions !== false) {
+      writer.uint32(32).bool(message.enableUnorderedTransactions);
     }
     return writer;
   },
@@ -79,6 +88,14 @@ export const Module: MessageFns<Module> = {
           message.authority = reader.string();
           continue;
         }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.enableUnorderedTransactions = reader.bool();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -95,6 +112,9 @@ export const Module: MessageFns<Module> = {
         ? object.moduleAccountPermissions.map((e: any) => ModuleAccountPermission.fromJSON(e))
         : [],
       authority: isSet(object.authority) ? globalThis.String(object.authority) : "",
+      enableUnorderedTransactions: isSet(object.enableUnorderedTransactions)
+        ? globalThis.Boolean(object.enableUnorderedTransactions)
+        : false,
     };
   },
 
@@ -109,6 +129,9 @@ export const Module: MessageFns<Module> = {
     if (message.authority !== "") {
       obj.authority = message.authority;
     }
+    if (message.enableUnorderedTransactions !== false) {
+      obj.enableUnorderedTransactions = message.enableUnorderedTransactions;
+    }
     return obj;
   },
 
@@ -121,6 +144,7 @@ export const Module: MessageFns<Module> = {
     message.moduleAccountPermissions =
       object.moduleAccountPermissions?.map((e) => ModuleAccountPermission.fromPartial(e)) || [];
     message.authority = object.authority ?? "";
+    message.enableUnorderedTransactions = object.enableUnorderedTransactions ?? false;
     return message;
   },
 };

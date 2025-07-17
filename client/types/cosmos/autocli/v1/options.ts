@@ -39,6 +39,14 @@ export interface ServiceCommandDescriptor {
    * sub-command.
    */
   subCommands: { [key: string]: ServiceCommandDescriptor };
+  /**
+   * enhance_custom_commands specifies whether to skip the service when generating commands, if a custom command already
+   * exists, or enhance the existing command. If set to true, the custom command will be enhanced with the services from
+   * gRPC. otherwise when a custom command exists, no commands will be generated for the service.
+   */
+  enhanceCustomCommand: boolean;
+  /** short is an optional parameter used to override the short description of the auto generated command. */
+  short: string;
 }
 
 export interface ServiceCommandDescriptor_SubCommandsEntry {
@@ -96,6 +104,13 @@ export interface RpcCommandOptions {
   positionalArgs: PositionalArgDescriptor[];
   /** skip specifies whether to skip this rpc method when generating commands. */
   skip: boolean;
+  /**
+   * gov_proposal specifies whether autocli should generate a gov proposal transaction for this rpc method.
+   * Normally autocli generates a transaction containing the message and broadcast it.
+   * However, when true, autocli generates a proposal transaction containing the message and broadcast it.
+   * This option is ineffective for query commands.
+   */
+  govProposal: boolean;
 }
 
 export interface RpcCommandOptions_FlagOptionsEntry {
@@ -136,9 +151,14 @@ export interface PositionalArgDescriptor {
   /**
    * varargs makes a positional parameter a varargs parameter. This can only be
    * applied to last positional parameter and the proto_field must a repeated
-   * field.
+   * field. Note: It is mutually exclusive with optional.
    */
   varargs: boolean;
+  /**
+   * optional makes the last positional parameter optional.
+   * Note: It is mutually exclusive with varargs.
+   */
+  optional: boolean;
 }
 
 function createBaseModuleOptions(): ModuleOptions {
@@ -222,7 +242,7 @@ export const ModuleOptions: MessageFns<ModuleOptions> = {
 };
 
 function createBaseServiceCommandDescriptor(): ServiceCommandDescriptor {
-  return { service: "", rpcCommandOptions: [], subCommands: {} };
+  return { service: "", rpcCommandOptions: [], subCommands: {}, enhanceCustomCommand: false, short: "" };
 }
 
 export const ServiceCommandDescriptor: MessageFns<ServiceCommandDescriptor> = {
@@ -236,6 +256,12 @@ export const ServiceCommandDescriptor: MessageFns<ServiceCommandDescriptor> = {
     Object.entries(message.subCommands).forEach(([key, value]) => {
       ServiceCommandDescriptor_SubCommandsEntry.encode({ key: key as any, value }, writer.uint32(26).fork()).join();
     });
+    if (message.enhanceCustomCommand !== false) {
+      writer.uint32(32).bool(message.enhanceCustomCommand);
+    }
+    if (message.short !== "") {
+      writer.uint32(42).string(message.short);
+    }
     return writer;
   },
 
@@ -273,6 +299,22 @@ export const ServiceCommandDescriptor: MessageFns<ServiceCommandDescriptor> = {
           }
           continue;
         }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.enhanceCustomCommand = reader.bool();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.short = reader.string();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -297,6 +339,10 @@ export const ServiceCommandDescriptor: MessageFns<ServiceCommandDescriptor> = {
           {},
         )
         : {},
+      enhanceCustomCommand: isSet(object.enhanceCustomCommand)
+        ? globalThis.Boolean(object.enhanceCustomCommand)
+        : false,
+      short: isSet(object.short) ? globalThis.String(object.short) : "",
     };
   },
 
@@ -317,6 +363,12 @@ export const ServiceCommandDescriptor: MessageFns<ServiceCommandDescriptor> = {
         });
       }
     }
+    if (message.enhanceCustomCommand !== false) {
+      obj.enhanceCustomCommand = message.enhanceCustomCommand;
+    }
+    if (message.short !== "") {
+      obj.short = message.short;
+    }
     return obj;
   },
 
@@ -336,6 +388,8 @@ export const ServiceCommandDescriptor: MessageFns<ServiceCommandDescriptor> = {
       },
       {},
     );
+    message.enhanceCustomCommand = object.enhanceCustomCommand ?? false;
+    message.short = object.short ?? "";
     return message;
   },
 };
@@ -436,6 +490,7 @@ function createBaseRpcCommandOptions(): RpcCommandOptions {
     flagOptions: {},
     positionalArgs: [],
     skip: false,
+    govProposal: false,
   };
 }
 
@@ -476,6 +531,9 @@ export const RpcCommandOptions: MessageFns<RpcCommandOptions> = {
     }
     if (message.skip !== false) {
       writer.uint32(96).bool(message.skip);
+    }
+    if (message.govProposal !== false) {
+      writer.uint32(104).bool(message.govProposal);
     }
     return writer;
   },
@@ -586,6 +644,14 @@ export const RpcCommandOptions: MessageFns<RpcCommandOptions> = {
           message.skip = reader.bool();
           continue;
         }
+        case 13: {
+          if (tag !== 104) {
+            break;
+          }
+
+          message.govProposal = reader.bool();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -618,6 +684,7 @@ export const RpcCommandOptions: MessageFns<RpcCommandOptions> = {
         ? object.positionalArgs.map((e: any) => PositionalArgDescriptor.fromJSON(e))
         : [],
       skip: isSet(object.skip) ? globalThis.Boolean(object.skip) : false,
+      govProposal: isSet(object.govProposal) ? globalThis.Boolean(object.govProposal) : false,
     };
   },
 
@@ -665,6 +732,9 @@ export const RpcCommandOptions: MessageFns<RpcCommandOptions> = {
     if (message.skip !== false) {
       obj.skip = message.skip;
     }
+    if (message.govProposal !== false) {
+      obj.govProposal = message.govProposal;
+    }
     return obj;
   },
 
@@ -693,6 +763,7 @@ export const RpcCommandOptions: MessageFns<RpcCommandOptions> = {
     );
     message.positionalArgs = object.positionalArgs?.map((e) => PositionalArgDescriptor.fromPartial(e)) || [];
     message.skip = object.skip ?? false;
+    message.govProposal = object.govProposal ?? false;
     return message;
   },
 };
@@ -944,7 +1015,7 @@ export const FlagOptions: MessageFns<FlagOptions> = {
 };
 
 function createBasePositionalArgDescriptor(): PositionalArgDescriptor {
-  return { protoField: "", varargs: false };
+  return { protoField: "", varargs: false, optional: false };
 }
 
 export const PositionalArgDescriptor: MessageFns<PositionalArgDescriptor> = {
@@ -954,6 +1025,9 @@ export const PositionalArgDescriptor: MessageFns<PositionalArgDescriptor> = {
     }
     if (message.varargs !== false) {
       writer.uint32(16).bool(message.varargs);
+    }
+    if (message.optional !== false) {
+      writer.uint32(24).bool(message.optional);
     }
     return writer;
   },
@@ -981,6 +1055,14 @@ export const PositionalArgDescriptor: MessageFns<PositionalArgDescriptor> = {
           message.varargs = reader.bool();
           continue;
         }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.optional = reader.bool();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -994,6 +1076,7 @@ export const PositionalArgDescriptor: MessageFns<PositionalArgDescriptor> = {
     return {
       protoField: isSet(object.protoField) ? globalThis.String(object.protoField) : "",
       varargs: isSet(object.varargs) ? globalThis.Boolean(object.varargs) : false,
+      optional: isSet(object.optional) ? globalThis.Boolean(object.optional) : false,
     };
   },
 
@@ -1005,6 +1088,9 @@ export const PositionalArgDescriptor: MessageFns<PositionalArgDescriptor> = {
     if (message.varargs !== false) {
       obj.varargs = message.varargs;
     }
+    if (message.optional !== false) {
+      obj.optional = message.optional;
+    }
     return obj;
   },
 
@@ -1015,6 +1101,7 @@ export const PositionalArgDescriptor: MessageFns<PositionalArgDescriptor> = {
     const message = createBasePositionalArgDescriptor();
     message.protoField = object.protoField ?? "";
     message.varargs = object.varargs ?? false;
+    message.optional = object.optional ?? false;
     return message;
   },
 };

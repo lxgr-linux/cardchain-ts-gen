@@ -23,8 +23,6 @@ import {
 
 export const protobufPackage = "cosmos.gov.v1";
 
-/** Since: cosmos-sdk 0.46 */
-
 /** QueryConstitutionRequest is the request type for the Query/Constitution RPC method */
 export interface QueryConstitutionRequest {
 }
@@ -137,11 +135,7 @@ export interface QueryParamsResponse {
   tallyParams:
     | TallyParams
     | undefined;
-  /**
-   * params defines all the paramaters of x/gov module.
-   *
-   * Since: cosmos-sdk 0.47
-   */
+  /** params defines all the paramaters of x/gov module. */
   params: Params | undefined;
 }
 
