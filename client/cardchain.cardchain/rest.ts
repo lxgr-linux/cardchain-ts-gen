@@ -448,14 +448,14 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
    *
    * @tags Query
    * @name queryEncounterWithImage
-   * @request GET:/DecentralCardGame/cardchain/cardchain/encounter_with_image
+   * @request GET:/DecentralCardGame/cardchain/cardchain/encounter_with_image/{encounterId}
    */
-  queryEncounterWithImage = (
-    query?: Omit<FlattenObject<SnakeCasedPropertiesDeep<ChangeProtoToJSPrimitives<QueryEncounterWithImageRequest>>>,"">,
+  queryEncounterWithImage = (encounterId: string,
+    query?: Record<string, any>,
     params: RequestParams = {},
   ) =>
     this.request<SnakeCasedPropertiesDeep<ChangeProtoToJSPrimitives<QueryEncounterWithImageResponse>>>({
-      path: `/DecentralCardGame/cardchain/cardchain/encounter_with_image`,
+      path: `/DecentralCardGame/cardchain/cardchain/encounter_with_image/${encounterId}`,
       method: "GET",
       query: query,
       format: "json",
