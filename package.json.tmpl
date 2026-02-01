@@ -5,9 +5,12 @@
   "author": "Lxgr <lxgr@protonmail.com>",
   "main": "index.js",
   "types": "index.d.ts",
+  "files": [
+    "lib"
+  ],
   "scripts": {
     "build": "NODE_OPTIONS='--max-old-space-size=16384' tsc",
-    "upload": "npm run build && cp package.json lib/ && cd lib && npm publish"
+    "upload": "npm run build && npm publish"
   },
   "dependencies": {
     "@bufbuild/protobuf": "^2.4.0",
