@@ -56,6 +56,7 @@ import { MsgEncounterCreate } from "../types/cardchain/cardchain/tx";
 import { MsgEncounterEdit } from "../types/cardchain/cardchain/tx";
 import { MsgEncounterDo } from "../types/cardchain/cardchain/tx";
 import { MsgEncounterClose } from "../types/cardchain/cardchain/tx";
+import { MsgEncounterDelete } from "../types/cardchain/cardchain/tx";
 import { MsgEarlyAccessDisinvite } from "../types/cardchain/cardchain/tx";
 import { MsgCardBan } from "../types/cardchain/cardchain/tx";
 import { MsgEarlyAccessGrant } from "../types/cardchain/cardchain/tx";
@@ -92,7 +93,7 @@ import { SingleVote as typeSingleVote} from "./types"
 import { VotingResults as typeVotingResults} from "./types"
 import { Zealy as typeZealy} from "./types"
 
-export { MsgUpdateParams, MsgUserCreate, MsgCardSchemeBuy, MsgCardSaveContent, MsgCardVote, MsgCardTransfer, MsgCardDonate, MsgCardArtworkAdd, MsgCardArtistChange, MsgCouncilRegister, MsgCouncilDeregister, MsgMatchReport, MsgCouncilCreate, MsgMatchReporterAppoint, MsgSetCreate, MsgSetCardAdd, MsgSetCardRemove, MsgSetContributorAdd, MsgSetContributorRemove, MsgSetFinalize, MsgSetArtworkAdd, MsgSetStoryAdd, MsgBoosterPackBuy, MsgSellOfferCreate, MsgSellOfferBuy, MsgSellOfferRemove, MsgCardRaritySet, MsgCouncilResponseCommit, MsgCouncilResponseReveal, MsgCouncilRestart, MsgMatchConfirm, MsgProfileCardSet, MsgProfileWebsiteSet, MsgProfileBioSet, MsgBoosterPackOpen, MsgBoosterPackTransfer, MsgSetStoryWriterSet, MsgSetArtistSet, MsgCardVoteMulti, MsgMatchOpen, MsgSetNameSet, MsgProfileAliasSet, MsgEarlyAccessInvite, MsgZealyConnect, MsgEncounterCreate, MsgEncounterEdit, MsgEncounterDo, MsgEncounterClose, MsgEarlyAccessDisinvite, MsgCardBan, MsgEarlyAccessGrant, MsgSetActivate, MsgCardCopyrightClaim };
+export { MsgUpdateParams, MsgUserCreate, MsgCardSchemeBuy, MsgCardSaveContent, MsgCardVote, MsgCardTransfer, MsgCardDonate, MsgCardArtworkAdd, MsgCardArtistChange, MsgCouncilRegister, MsgCouncilDeregister, MsgMatchReport, MsgCouncilCreate, MsgMatchReporterAppoint, MsgSetCreate, MsgSetCardAdd, MsgSetCardRemove, MsgSetContributorAdd, MsgSetContributorRemove, MsgSetFinalize, MsgSetArtworkAdd, MsgSetStoryAdd, MsgBoosterPackBuy, MsgSellOfferCreate, MsgSellOfferBuy, MsgSellOfferRemove, MsgCardRaritySet, MsgCouncilResponseCommit, MsgCouncilResponseReveal, MsgCouncilRestart, MsgMatchConfirm, MsgProfileCardSet, MsgProfileWebsiteSet, MsgProfileBioSet, MsgBoosterPackOpen, MsgBoosterPackTransfer, MsgSetStoryWriterSet, MsgSetArtistSet, MsgCardVoteMulti, MsgMatchOpen, MsgSetNameSet, MsgProfileAliasSet, MsgEarlyAccessInvite, MsgZealyConnect, MsgEncounterCreate, MsgEncounterEdit, MsgEncounterDo, MsgEncounterClose, MsgEncounterDelete, MsgEarlyAccessDisinvite, MsgCardBan, MsgEarlyAccessGrant, MsgSetActivate, MsgCardCopyrightClaim };
 
 type sendMsgUpdateParamsParams = {
   value: MsgUpdateParams,
@@ -382,6 +383,12 @@ type sendMsgEncounterCloseParams = {
   memo?: string
 };
 
+type sendMsgEncounterDeleteParams = {
+  value: MsgEncounterDelete,
+  fee?: StdFee,
+  memo?: string
+};
+
 type sendMsgEarlyAccessDisinviteParams = {
   value: MsgEarlyAccessDisinvite,
   fee?: StdFee,
@@ -603,6 +610,10 @@ type msgEncounterDoParams = {
 
 type msgEncounterCloseParams = {
   value: MsgEncounterClose,
+};
+
+type msgEncounterDeleteParams = {
+  value: MsgEncounterDelete,
 };
 
 type msgEarlyAccessDisinviteParams = {
@@ -1327,6 +1338,20 @@ export const txClient = ({ signer, prefix, addr }: TxClientOptions = { addr: "ht
 			}
 		},
 		
+		async sendMsgEncounterDelete({ value, fee, memo }: sendMsgEncounterDeleteParams): Promise<DeliverTxResponse> {
+			if (!signer) {
+					throw new Error('TxClient:sendMsgEncounterDelete: Unable to sign Tx. Signer is not present.')
+			}
+			try {			
+				const { address } = (await signer.getAccounts())[0]; 
+				const signingClient = await SigningStargateClient.connectWithSigner(addr,signer,{registry, aminoTypes: new AminoAdapter(registry)});
+				let msg = this.msgEncounterDelete({ value: MsgEncounterDelete.fromPartial(value) })
+				return await signingClient.signAndBroadcast(address, [msg], fee ? fee : defaultFee, memo)
+			} catch (e: any) {
+				throw new Error('TxClient:sendMsgEncounterDelete: Could not broadcast Tx: '+ e.message)
+			}
+		},
+		
 		async sendMsgEarlyAccessDisinvite({ value, fee, memo }: sendMsgEarlyAccessDisinviteParams): Promise<DeliverTxResponse> {
 			if (!signer) {
 					throw new Error('TxClient:sendMsgEarlyAccessDisinvite: Unable to sign Tx. Signer is not present.')
@@ -1779,6 +1804,14 @@ export const txClient = ({ signer, prefix, addr }: TxClientOptions = { addr: "ht
 				return { typeUrl: "/cardchain.cardchain.MsgEncounterClose", value: MsgEncounterClose.fromPartial( value ) }  
 			} catch (e: any) {
 				throw new Error('TxClient:MsgEncounterClose: Could not create message: ' + e.message)
+			}
+		},
+		
+		msgEncounterDelete({ value }: msgEncounterDeleteParams): EncodeObject {
+			try {
+				return { typeUrl: "/cardchain.cardchain.MsgEncounterDelete", value: MsgEncounterDelete.fromPartial( value ) }  
+			} catch (e: any) {
+				throw new Error('TxClient:MsgEncounterDelete: Could not create message: ' + e.message)
 			}
 		},
 		

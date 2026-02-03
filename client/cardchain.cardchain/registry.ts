@@ -47,6 +47,7 @@ import { MsgEncounterCreate } from "../types/cardchain/cardchain/tx";
 import { MsgEncounterEdit } from "../types/cardchain/cardchain/tx";
 import { MsgEncounterDo } from "../types/cardchain/cardchain/tx";
 import { MsgEncounterClose } from "../types/cardchain/cardchain/tx";
+import { MsgEncounterDelete } from "../types/cardchain/cardchain/tx";
 import { MsgEarlyAccessDisinvite } from "../types/cardchain/cardchain/tx";
 import { MsgCardBan } from "../types/cardchain/cardchain/tx";
 import { MsgEarlyAccessGrant } from "../types/cardchain/cardchain/tx";
@@ -102,6 +103,7 @@ const msgTypes: Array<[string, GeneratedType]>  = [
     ["/cardchain.cardchain.MsgEncounterEdit", MsgEncounterEdit],
     ["/cardchain.cardchain.MsgEncounterDo", MsgEncounterDo],
     ["/cardchain.cardchain.MsgEncounterClose", MsgEncounterClose],
+    ["/cardchain.cardchain.MsgEncounterDelete", MsgEncounterDelete],
     ["/cardchain.cardchain.MsgEarlyAccessDisinvite", MsgEarlyAccessDisinvite],
     ["/cardchain.cardchain.MsgCardBan", MsgCardBan],
     ["/cardchain.cardchain.MsgEarlyAccessGrant", MsgEarlyAccessGrant],

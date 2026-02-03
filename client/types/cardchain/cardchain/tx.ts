@@ -506,6 +506,16 @@ export interface MsgCardCopyrightClaim {
 export interface MsgCardCopyrightClaimResponse {
 }
 
+/** MsgEncounterDelete defines the MsgEncounterDelete message. */
+export interface MsgEncounterDelete {
+  creator: string;
+  id: number;
+}
+
+/** MsgEncounterDeleteResponse defines the MsgEncounterDeleteResponse message. */
+export interface MsgEncounterDeleteResponse {
+}
+
 function createBaseMsgUpdateParams(): MsgUpdateParams {
   return { authority: "", params: undefined };
 }
@@ -7792,6 +7802,125 @@ export const MsgCardCopyrightClaimResponse: MessageFns<MsgCardCopyrightClaimResp
   },
 };
 
+function createBaseMsgEncounterDelete(): MsgEncounterDelete {
+  return { creator: "", id: 0 };
+}
+
+export const MsgEncounterDelete: MessageFns<MsgEncounterDelete> = {
+  encode(message: MsgEncounterDelete, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.id !== 0) {
+      writer.uint32(16).uint64(message.id);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgEncounterDelete {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgEncounterDelete();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.creator = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.id = longToNumber(reader.uint64());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgEncounterDelete {
+    return {
+      creator: isSet(object.creator) ? globalThis.String(object.creator) : "",
+      id: isSet(object.id) ? globalThis.Number(object.id) : 0,
+    };
+  },
+
+  toJSON(message: MsgEncounterDelete): unknown {
+    const obj: any = {};
+    if (message.creator !== "") {
+      obj.creator = message.creator;
+    }
+    if (message.id !== 0) {
+      obj.id = Math.round(message.id);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<MsgEncounterDelete>, I>>(base?: I): MsgEncounterDelete {
+    return MsgEncounterDelete.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<MsgEncounterDelete>, I>>(object: I): MsgEncounterDelete {
+    const message = createBaseMsgEncounterDelete();
+    message.creator = object.creator ?? "";
+    message.id = object.id ?? 0;
+    return message;
+  },
+};
+
+function createBaseMsgEncounterDeleteResponse(): MsgEncounterDeleteResponse {
+  return {};
+}
+
+export const MsgEncounterDeleteResponse: MessageFns<MsgEncounterDeleteResponse> = {
+  encode(_: MsgEncounterDeleteResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgEncounterDeleteResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgEncounterDeleteResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgEncounterDeleteResponse {
+    return {};
+  },
+
+  toJSON(_: MsgEncounterDeleteResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<MsgEncounterDeleteResponse>, I>>(base?: I): MsgEncounterDeleteResponse {
+    return MsgEncounterDeleteResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<MsgEncounterDeleteResponse>, I>>(_: I): MsgEncounterDeleteResponse {
+    const message = createBaseMsgEncounterDeleteResponse();
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
   /**
@@ -7846,6 +7975,7 @@ export interface Msg {
   EncounterEdit(request: MsgEncounterEdit): Promise<MsgEncounterEditResponse>;
   EncounterDo(request: MsgEncounterDo): Promise<MsgEncounterDoResponse>;
   EncounterClose(request: MsgEncounterClose): Promise<MsgEncounterCloseResponse>;
+  EncounterDelete(request: MsgEncounterDelete): Promise<MsgEncounterDeleteResponse>;
   EarlyAccessDisinvite(request: MsgEarlyAccessDisinvite): Promise<MsgEarlyAccessDisinviteResponse>;
   CardBan(request: MsgCardBan): Promise<MsgCardBanResponse>;
   EarlyAccessGrant(request: MsgEarlyAccessGrant): Promise<MsgEarlyAccessGrantResponse>;
@@ -7908,6 +8038,7 @@ export class MsgClientImpl implements Msg {
     this.EncounterEdit = this.EncounterEdit.bind(this);
     this.EncounterDo = this.EncounterDo.bind(this);
     this.EncounterClose = this.EncounterClose.bind(this);
+    this.EncounterDelete = this.EncounterDelete.bind(this);
     this.EarlyAccessDisinvite = this.EarlyAccessDisinvite.bind(this);
     this.CardBan = this.CardBan.bind(this);
     this.EarlyAccessGrant = this.EarlyAccessGrant.bind(this);
@@ -8200,6 +8331,12 @@ export class MsgClientImpl implements Msg {
     const data = MsgEncounterClose.encode(request).finish();
     const promise = this.rpc.request(this.service, "EncounterClose", data);
     return promise.then((data) => MsgEncounterCloseResponse.decode(new BinaryReader(data)));
+  }
+
+  EncounterDelete(request: MsgEncounterDelete): Promise<MsgEncounterDeleteResponse> {
+    const data = MsgEncounterDelete.encode(request).finish();
+    const promise = this.rpc.request(this.service, "EncounterDelete", data);
+    return promise.then((data) => MsgEncounterDeleteResponse.decode(new BinaryReader(data)));
   }
 
   EarlyAccessDisinvite(request: MsgEarlyAccessDisinvite): Promise<MsgEarlyAccessDisinviteResponse> {
