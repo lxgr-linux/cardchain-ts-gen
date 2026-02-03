@@ -9,8 +9,8 @@ import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
 import { Coin } from "../../cosmos/base/v1beta1/coin";
 import { CardRarity, cardRarityFromJSON, cardRarityToJSON } from "./card";
 import { Response, responseFromJSON, responseToJSON } from "./council";
-import { Parameter } from "./encounter";
 import { Outcome, outcomeFromJSON, outcomeToJSON } from "./match";
+import { Parameter } from "./parameter";
 import { Params } from "./params";
 import { SingleVote } from "./voting";
 
@@ -59,6 +59,7 @@ export interface MsgCardSaveContent {
   notes: string;
   artist: string;
   balanceAnchor: boolean;
+  parameters: Parameter[];
 }
 
 export interface MsgCardSaveContentResponse {
@@ -430,6 +431,20 @@ export interface MsgEncounterCreate {
 }
 
 export interface MsgEncounterCreateResponse {
+}
+
+/** MsgEncounterEdit defines the MsgEncounterEdit message. */
+export interface MsgEncounterEdit {
+  creator: string;
+  id: number;
+  name: string;
+  drawlist: number[];
+  parameters: Parameter[];
+  image: Uint8Array;
+}
+
+/** MsgEncounterEditResponse defines the MsgEncounterEditResponse message. */
+export interface MsgEncounterEditResponse {
 }
 
 export interface MsgEncounterDo {
@@ -882,7 +897,15 @@ export const MsgCardSchemeBuyResponse: MessageFns<MsgCardSchemeBuyResponse> = {
 };
 
 function createBaseMsgCardSaveContent(): MsgCardSaveContent {
-  return { creator: "", cardId: 0, content: new Uint8Array(0), notes: "", artist: "", balanceAnchor: false };
+  return {
+    creator: "",
+    cardId: 0,
+    content: new Uint8Array(0),
+    notes: "",
+    artist: "",
+    balanceAnchor: false,
+    parameters: [],
+  };
 }
 
 export const MsgCardSaveContent: MessageFns<MsgCardSaveContent> = {
@@ -904,6 +927,9 @@ export const MsgCardSaveContent: MessageFns<MsgCardSaveContent> = {
     }
     if (message.balanceAnchor !== false) {
       writer.uint32(48).bool(message.balanceAnchor);
+    }
+    for (const v of message.parameters) {
+      Parameter.encode(v!, writer.uint32(58).fork()).join();
     }
     return writer;
   },
@@ -963,6 +989,14 @@ export const MsgCardSaveContent: MessageFns<MsgCardSaveContent> = {
           message.balanceAnchor = reader.bool();
           continue;
         }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.parameters.push(Parameter.decode(reader, reader.uint32()));
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -980,6 +1014,9 @@ export const MsgCardSaveContent: MessageFns<MsgCardSaveContent> = {
       notes: isSet(object.notes) ? globalThis.String(object.notes) : "",
       artist: isSet(object.artist) ? globalThis.String(object.artist) : "",
       balanceAnchor: isSet(object.balanceAnchor) ? globalThis.Boolean(object.balanceAnchor) : false,
+      parameters: globalThis.Array.isArray(object?.parameters)
+        ? object.parameters.map((e: any) => Parameter.fromJSON(e))
+        : [],
     };
   },
 
@@ -1003,6 +1040,9 @@ export const MsgCardSaveContent: MessageFns<MsgCardSaveContent> = {
     if (message.balanceAnchor !== false) {
       obj.balanceAnchor = message.balanceAnchor;
     }
+    if (message.parameters?.length) {
+      obj.parameters = message.parameters.map((e) => Parameter.toJSON(e));
+    }
     return obj;
   },
 
@@ -1017,6 +1057,7 @@ export const MsgCardSaveContent: MessageFns<MsgCardSaveContent> = {
     message.notes = object.notes ?? "";
     message.artist = object.artist ?? "";
     message.balanceAnchor = object.balanceAnchor ?? false;
+    message.parameters = object.parameters?.map((e) => Parameter.fromPartial(e)) || [];
     return message;
   },
 };
@@ -6673,6 +6714,203 @@ export const MsgEncounterCreateResponse: MessageFns<MsgEncounterCreateResponse> 
   },
 };
 
+function createBaseMsgEncounterEdit(): MsgEncounterEdit {
+  return { creator: "", id: 0, name: "", drawlist: [], parameters: [], image: new Uint8Array(0) };
+}
+
+export const MsgEncounterEdit: MessageFns<MsgEncounterEdit> = {
+  encode(message: MsgEncounterEdit, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.id !== 0) {
+      writer.uint32(16).uint64(message.id);
+    }
+    if (message.name !== "") {
+      writer.uint32(26).string(message.name);
+    }
+    writer.uint32(34).fork();
+    for (const v of message.drawlist) {
+      writer.uint64(v);
+    }
+    writer.join();
+    for (const v of message.parameters) {
+      Parameter.encode(v!, writer.uint32(42).fork()).join();
+    }
+    if (message.image.length !== 0) {
+      writer.uint32(50).bytes(message.image);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgEncounterEdit {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgEncounterEdit();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.creator = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.id = longToNumber(reader.uint64());
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.name = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag === 32) {
+            message.drawlist.push(longToNumber(reader.uint64()));
+
+            continue;
+          }
+
+          if (tag === 34) {
+            const end2 = reader.uint32() + reader.pos;
+            while (reader.pos < end2) {
+              message.drawlist.push(longToNumber(reader.uint64()));
+            }
+
+            continue;
+          }
+
+          break;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.parameters.push(Parameter.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.image = reader.bytes();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgEncounterEdit {
+    return {
+      creator: isSet(object.creator) ? globalThis.String(object.creator) : "",
+      id: isSet(object.id) ? globalThis.Number(object.id) : 0,
+      name: isSet(object.name) ? globalThis.String(object.name) : "",
+      drawlist: globalThis.Array.isArray(object?.drawlist) ? object.drawlist.map((e: any) => globalThis.Number(e)) : [],
+      parameters: globalThis.Array.isArray(object?.parameters)
+        ? object.parameters.map((e: any) => Parameter.fromJSON(e))
+        : [],
+      image: isSet(object.image) ? bytesFromBase64(object.image) : new Uint8Array(0),
+    };
+  },
+
+  toJSON(message: MsgEncounterEdit): unknown {
+    const obj: any = {};
+    if (message.creator !== "") {
+      obj.creator = message.creator;
+    }
+    if (message.id !== 0) {
+      obj.id = Math.round(message.id);
+    }
+    if (message.name !== "") {
+      obj.name = message.name;
+    }
+    if (message.drawlist?.length) {
+      obj.drawlist = message.drawlist.map((e) => Math.round(e));
+    }
+    if (message.parameters?.length) {
+      obj.parameters = message.parameters.map((e) => Parameter.toJSON(e));
+    }
+    if (message.image.length !== 0) {
+      obj.image = base64FromBytes(message.image);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<MsgEncounterEdit>, I>>(base?: I): MsgEncounterEdit {
+    return MsgEncounterEdit.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<MsgEncounterEdit>, I>>(object: I): MsgEncounterEdit {
+    const message = createBaseMsgEncounterEdit();
+    message.creator = object.creator ?? "";
+    message.id = object.id ?? 0;
+    message.name = object.name ?? "";
+    message.drawlist = object.drawlist?.map((e) => e) || [];
+    message.parameters = object.parameters?.map((e) => Parameter.fromPartial(e)) || [];
+    message.image = object.image ?? new Uint8Array(0);
+    return message;
+  },
+};
+
+function createBaseMsgEncounterEditResponse(): MsgEncounterEditResponse {
+  return {};
+}
+
+export const MsgEncounterEditResponse: MessageFns<MsgEncounterEditResponse> = {
+  encode(_: MsgEncounterEditResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgEncounterEditResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgEncounterEditResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgEncounterEditResponse {
+    return {};
+  },
+
+  toJSON(_: MsgEncounterEditResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<MsgEncounterEditResponse>, I>>(base?: I): MsgEncounterEditResponse {
+    return MsgEncounterEditResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<MsgEncounterEditResponse>, I>>(_: I): MsgEncounterEditResponse {
+    const message = createBaseMsgEncounterEditResponse();
+    return message;
+  },
+};
+
 function createBaseMsgEncounterDo(): MsgEncounterDo {
   return { creator: "", encounterId: 0, user: "" };
 }
@@ -7605,6 +7843,7 @@ export interface Msg {
   EarlyAccessInvite(request: MsgEarlyAccessInvite): Promise<MsgEarlyAccessInviteResponse>;
   ZealyConnect(request: MsgZealyConnect): Promise<MsgZealyConnectResponse>;
   EncounterCreate(request: MsgEncounterCreate): Promise<MsgEncounterCreateResponse>;
+  EncounterEdit(request: MsgEncounterEdit): Promise<MsgEncounterEditResponse>;
   EncounterDo(request: MsgEncounterDo): Promise<MsgEncounterDoResponse>;
   EncounterClose(request: MsgEncounterClose): Promise<MsgEncounterCloseResponse>;
   EarlyAccessDisinvite(request: MsgEarlyAccessDisinvite): Promise<MsgEarlyAccessDisinviteResponse>;
@@ -7666,6 +7905,7 @@ export class MsgClientImpl implements Msg {
     this.EarlyAccessInvite = this.EarlyAccessInvite.bind(this);
     this.ZealyConnect = this.ZealyConnect.bind(this);
     this.EncounterCreate = this.EncounterCreate.bind(this);
+    this.EncounterEdit = this.EncounterEdit.bind(this);
     this.EncounterDo = this.EncounterDo.bind(this);
     this.EncounterClose = this.EncounterClose.bind(this);
     this.EarlyAccessDisinvite = this.EarlyAccessDisinvite.bind(this);
@@ -7942,6 +8182,12 @@ export class MsgClientImpl implements Msg {
     const data = MsgEncounterCreate.encode(request).finish();
     const promise = this.rpc.request(this.service, "EncounterCreate", data);
     return promise.then((data) => MsgEncounterCreateResponse.decode(new BinaryReader(data)));
+  }
+
+  EncounterEdit(request: MsgEncounterEdit): Promise<MsgEncounterEditResponse> {
+    const data = MsgEncounterEdit.encode(request).finish();
+    const promise = this.rpc.request(this.service, "EncounterEdit", data);
+    return promise.then((data) => MsgEncounterEditResponse.decode(new BinaryReader(data)));
   }
 
   EncounterDo(request: MsgEncounterDo): Promise<MsgEncounterDoResponse> {

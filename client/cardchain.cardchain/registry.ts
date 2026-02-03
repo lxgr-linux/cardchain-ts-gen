@@ -44,6 +44,7 @@ import { MsgProfileAliasSet } from "../types/cardchain/cardchain/tx";
 import { MsgEarlyAccessInvite } from "../types/cardchain/cardchain/tx";
 import { MsgZealyConnect } from "../types/cardchain/cardchain/tx";
 import { MsgEncounterCreate } from "../types/cardchain/cardchain/tx";
+import { MsgEncounterEdit } from "../types/cardchain/cardchain/tx";
 import { MsgEncounterDo } from "../types/cardchain/cardchain/tx";
 import { MsgEncounterClose } from "../types/cardchain/cardchain/tx";
 import { MsgEarlyAccessDisinvite } from "../types/cardchain/cardchain/tx";
@@ -98,6 +99,7 @@ const msgTypes: Array<[string, GeneratedType]>  = [
     ["/cardchain.cardchain.MsgEarlyAccessInvite", MsgEarlyAccessInvite],
     ["/cardchain.cardchain.MsgZealyConnect", MsgZealyConnect],
     ["/cardchain.cardchain.MsgEncounterCreate", MsgEncounterCreate],
+    ["/cardchain.cardchain.MsgEncounterEdit", MsgEncounterEdit],
     ["/cardchain.cardchain.MsgEncounterDo", MsgEncounterDo],
     ["/cardchain.cardchain.MsgEncounterClose", MsgEncounterClose],
     ["/cardchain.cardchain.MsgEarlyAccessDisinvite", MsgEarlyAccessDisinvite],

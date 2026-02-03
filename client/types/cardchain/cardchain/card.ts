@@ -7,6 +7,7 @@
 /* eslint-disable */
 import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
 import { Coin } from "../../cosmos/base/v1beta1/coin";
+import { Parameter } from "./parameter";
 
 export const protobufPackage = "cardchain.cardchain";
 
@@ -250,6 +251,7 @@ export interface Card {
   balanceAnchor: boolean;
   starterCard: boolean;
   rarity: CardRarity;
+  parameters: Parameter[];
 }
 
 export interface TimeStamp {
@@ -275,6 +277,7 @@ function createBaseCard(): Card {
     balanceAnchor: false,
     starterCard: false,
     rarity: 0,
+    parameters: [],
   };
 }
 
@@ -330,6 +333,9 @@ export const Card: MessageFns<Card> = {
     }
     if (message.rarity !== 0) {
       writer.uint32(136).int32(message.rarity);
+    }
+    for (const v of message.parameters) {
+      Parameter.encode(v!, writer.uint32(146).fork()).join();
     }
     return writer;
   },
@@ -477,6 +483,14 @@ export const Card: MessageFns<Card> = {
           message.rarity = reader.int32() as any;
           continue;
         }
+        case 18: {
+          if (tag !== 146) {
+            break;
+          }
+
+          message.parameters.push(Parameter.decode(reader, reader.uint32()));
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -505,6 +519,9 @@ export const Card: MessageFns<Card> = {
       balanceAnchor: isSet(object.balanceAnchor) ? globalThis.Boolean(object.balanceAnchor) : false,
       starterCard: isSet(object.starterCard) ? globalThis.Boolean(object.starterCard) : false,
       rarity: isSet(object.rarity) ? cardRarityFromJSON(object.rarity) : 0,
+      parameters: globalThis.Array.isArray(object?.parameters)
+        ? object.parameters.map((e: any) => Parameter.fromJSON(e))
+        : [],
     };
   },
 
@@ -561,6 +578,9 @@ export const Card: MessageFns<Card> = {
     if (message.rarity !== 0) {
       obj.rarity = cardRarityToJSON(message.rarity);
     }
+    if (message.parameters?.length) {
+      obj.parameters = message.parameters.map((e) => Parameter.toJSON(e));
+    }
     return obj;
   },
 
@@ -588,6 +608,7 @@ export const Card: MessageFns<Card> = {
     message.balanceAnchor = object.balanceAnchor ?? false;
     message.starterCard = object.starterCard ?? false;
     message.rarity = object.rarity ?? 0;
+    message.parameters = object.parameters?.map((e) => Parameter.fromPartial(e)) || [];
     return message;
   },
 };

@@ -6,13 +6,9 @@
 
 /* eslint-disable */
 import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
+import { Parameter } from "./parameter";
 
 export const protobufPackage = "cardchain.cardchain";
-
-export interface Parameter {
-  key: string;
-  value: string;
-}
 
 export interface Encounter {
   id: number;
@@ -23,82 +19,6 @@ export interface Encounter {
   imageId: number;
   name: string;
 }
-
-function createBaseParameter(): Parameter {
-  return { key: "", value: "" };
-}
-
-export const Parameter: MessageFns<Parameter> = {
-  encode(message: Parameter, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.key !== "") {
-      writer.uint32(10).string(message.key);
-    }
-    if (message.value !== "") {
-      writer.uint32(18).string(message.value);
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): Parameter {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseParameter();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 10) {
-            break;
-          }
-
-          message.key = reader.string();
-          continue;
-        }
-        case 2: {
-          if (tag !== 18) {
-            break;
-          }
-
-          message.value = reader.string();
-          continue;
-        }
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): Parameter {
-    return {
-      key: isSet(object.key) ? globalThis.String(object.key) : "",
-      value: isSet(object.value) ? globalThis.String(object.value) : "",
-    };
-  },
-
-  toJSON(message: Parameter): unknown {
-    const obj: any = {};
-    if (message.key !== "") {
-      obj.key = message.key;
-    }
-    if (message.value !== "") {
-      obj.value = message.value;
-    }
-    return obj;
-  },
-
-  create<I extends Exact<DeepPartial<Parameter>, I>>(base?: I): Parameter {
-    return Parameter.fromPartial(base ?? ({} as any));
-  },
-  fromPartial<I extends Exact<DeepPartial<Parameter>, I>>(object: I): Parameter {
-    const message = createBaseParameter();
-    message.key = object.key ?? "";
-    message.value = object.value ?? "";
-    return message;
-  },
-};
 
 function createBaseEncounter(): Encounter {
   return { id: 0, drawlist: [], proven: false, owner: "", parameters: [], imageId: 0, name: "" };

@@ -131,6 +131,7 @@ export interface QueryEncounterResponse {
 }
 
 export interface QueryEncountersRequest {
+  owner: string;
 }
 
 export interface QueryEncountersResponse {
@@ -146,6 +147,7 @@ export interface QueryEncounterWithImageResponse {
 }
 
 export interface QueryEncountersWithImageRequest {
+  owner: string;
 }
 
 export interface QueryEncountersWithImageResponse {
@@ -1659,11 +1661,14 @@ export const QueryEncounterResponse: MessageFns<QueryEncounterResponse> = {
 };
 
 function createBaseQueryEncountersRequest(): QueryEncountersRequest {
-  return {};
+  return { owner: "" };
 }
 
 export const QueryEncountersRequest: MessageFns<QueryEncountersRequest> = {
-  encode(_: QueryEncountersRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(message: QueryEncountersRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.owner !== "") {
+      writer.uint32(10).string(message.owner);
+    }
     return writer;
   },
 
@@ -1674,6 +1679,14 @@ export const QueryEncountersRequest: MessageFns<QueryEncountersRequest> = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.owner = reader.string();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1683,20 +1696,24 @@ export const QueryEncountersRequest: MessageFns<QueryEncountersRequest> = {
     return message;
   },
 
-  fromJSON(_: any): QueryEncountersRequest {
-    return {};
+  fromJSON(object: any): QueryEncountersRequest {
+    return { owner: isSet(object.owner) ? globalThis.String(object.owner) : "" };
   },
 
-  toJSON(_: QueryEncountersRequest): unknown {
+  toJSON(message: QueryEncountersRequest): unknown {
     const obj: any = {};
+    if (message.owner !== "") {
+      obj.owner = message.owner;
+    }
     return obj;
   },
 
   create<I extends Exact<DeepPartial<QueryEncountersRequest>, I>>(base?: I): QueryEncountersRequest {
     return QueryEncountersRequest.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<QueryEncountersRequest>, I>>(_: I): QueryEncountersRequest {
+  fromPartial<I extends Exact<DeepPartial<QueryEncountersRequest>, I>>(object: I): QueryEncountersRequest {
     const message = createBaseQueryEncountersRequest();
+    message.owner = object.owner ?? "";
     return message;
   },
 };
@@ -1886,11 +1903,14 @@ export const QueryEncounterWithImageResponse: MessageFns<QueryEncounterWithImage
 };
 
 function createBaseQueryEncountersWithImageRequest(): QueryEncountersWithImageRequest {
-  return {};
+  return { owner: "" };
 }
 
 export const QueryEncountersWithImageRequest: MessageFns<QueryEncountersWithImageRequest> = {
-  encode(_: QueryEncountersWithImageRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(message: QueryEncountersWithImageRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.owner !== "") {
+      writer.uint32(10).string(message.owner);
+    }
     return writer;
   },
 
@@ -1901,6 +1921,14 @@ export const QueryEncountersWithImageRequest: MessageFns<QueryEncountersWithImag
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.owner = reader.string();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1910,20 +1938,26 @@ export const QueryEncountersWithImageRequest: MessageFns<QueryEncountersWithImag
     return message;
   },
 
-  fromJSON(_: any): QueryEncountersWithImageRequest {
-    return {};
+  fromJSON(object: any): QueryEncountersWithImageRequest {
+    return { owner: isSet(object.owner) ? globalThis.String(object.owner) : "" };
   },
 
-  toJSON(_: QueryEncountersWithImageRequest): unknown {
+  toJSON(message: QueryEncountersWithImageRequest): unknown {
     const obj: any = {};
+    if (message.owner !== "") {
+      obj.owner = message.owner;
+    }
     return obj;
   },
 
   create<I extends Exact<DeepPartial<QueryEncountersWithImageRequest>, I>>(base?: I): QueryEncountersWithImageRequest {
     return QueryEncountersWithImageRequest.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<QueryEncountersWithImageRequest>, I>>(_: I): QueryEncountersWithImageRequest {
+  fromPartial<I extends Exact<DeepPartial<QueryEncountersWithImageRequest>, I>>(
+    object: I,
+  ): QueryEncountersWithImageRequest {
     const message = createBaseQueryEncountersWithImageRequest();
+    message.owner = object.owner ?? "";
     return message;
   },
 };

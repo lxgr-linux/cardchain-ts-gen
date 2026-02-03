@@ -5,12 +5,12 @@ import { CardWithImage } from "../types/cardchain/cardchain/card_with_image"
 import { Council } from "../types/cardchain/cardchain/council"
 import { WrapClearResponse } from "../types/cardchain/cardchain/council"
 import { WrapHashResponse } from "../types/cardchain/cardchain/council"
-import { Parameter } from "../types/cardchain/cardchain/encounter"
 import { Encounter } from "../types/cardchain/cardchain/encounter"
 import { EncounterWithImage } from "../types/cardchain/cardchain/encounter_with_image"
 import { Image } from "../types/cardchain/cardchain/image"
 import { Match } from "../types/cardchain/cardchain/match"
 import { MatchPlayer } from "../types/cardchain/cardchain/match"
+import { Parameter } from "../types/cardchain/cardchain/parameter"
 import { Params } from "../types/cardchain/cardchain/params"
 import { RunningAverage } from "../types/cardchain/cardchain/running_average"
 import { SellOffer } from "../types/cardchain/cardchain/sell_offer"
@@ -37,12 +37,12 @@ export {
     Council,
     WrapClearResponse,
     WrapHashResponse,
-    Parameter,
     Encounter,
     EncounterWithImage,
     Image,
     Match,
     MatchPlayer,
+    Parameter,
     Params,
     RunningAverage,
     SellOffer,

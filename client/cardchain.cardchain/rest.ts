@@ -432,7 +432,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
    * @request GET:/DecentralCardGame/cardchain/cardchain/encounters
    */
   queryEncounters = (
-    query?: Record<string, any>,
+    query?: Omit<FlattenObject<SnakeCasedPropertiesDeep<ChangeProtoToJSPrimitives<QueryEncountersRequest>>>,"">,
     params: RequestParams = {},
   ) =>
     this.request<SnakeCasedPropertiesDeep<ChangeProtoToJSPrimitives<QueryEncountersResponse>>>({
@@ -470,7 +470,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
    * @request GET:/DecentralCardGame/cardchain/cardchain/encounters_with_image
    */
   queryEncountersWithImage = (
-    query?: Record<string, any>,
+    query?: Omit<FlattenObject<SnakeCasedPropertiesDeep<ChangeProtoToJSPrimitives<QueryEncountersWithImageRequest>>>,"">,
     params: RequestParams = {},
   ) =>
     this.request<SnakeCasedPropertiesDeep<ChangeProtoToJSPrimitives<QueryEncountersWithImageResponse>>>({

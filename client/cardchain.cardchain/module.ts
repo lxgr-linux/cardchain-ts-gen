@@ -53,6 +53,7 @@ import { MsgProfileAliasSet } from "../types/cardchain/cardchain/tx";
 import { MsgEarlyAccessInvite } from "../types/cardchain/cardchain/tx";
 import { MsgZealyConnect } from "../types/cardchain/cardchain/tx";
 import { MsgEncounterCreate } from "../types/cardchain/cardchain/tx";
+import { MsgEncounterEdit } from "../types/cardchain/cardchain/tx";
 import { MsgEncounterDo } from "../types/cardchain/cardchain/tx";
 import { MsgEncounterClose } from "../types/cardchain/cardchain/tx";
 import { MsgEarlyAccessDisinvite } from "../types/cardchain/cardchain/tx";
@@ -68,12 +69,12 @@ import { CardWithImage as typeCardWithImage} from "./types"
 import { Council as typeCouncil} from "./types"
 import { WrapClearResponse as typeWrapClearResponse} from "./types"
 import { WrapHashResponse as typeWrapHashResponse} from "./types"
-import { Parameter as typeParameter} from "./types"
 import { Encounter as typeEncounter} from "./types"
 import { EncounterWithImage as typeEncounterWithImage} from "./types"
 import { Image as typeImage} from "./types"
 import { Match as typeMatch} from "./types"
 import { MatchPlayer as typeMatchPlayer} from "./types"
+import { Parameter as typeParameter} from "./types"
 import { Params as typeParams} from "./types"
 import { RunningAverage as typeRunningAverage} from "./types"
 import { SellOffer as typeSellOffer} from "./types"
@@ -91,7 +92,7 @@ import { SingleVote as typeSingleVote} from "./types"
 import { VotingResults as typeVotingResults} from "./types"
 import { Zealy as typeZealy} from "./types"
 
-export { MsgUpdateParams, MsgUserCreate, MsgCardSchemeBuy, MsgCardSaveContent, MsgCardVote, MsgCardTransfer, MsgCardDonate, MsgCardArtworkAdd, MsgCardArtistChange, MsgCouncilRegister, MsgCouncilDeregister, MsgMatchReport, MsgCouncilCreate, MsgMatchReporterAppoint, MsgSetCreate, MsgSetCardAdd, MsgSetCardRemove, MsgSetContributorAdd, MsgSetContributorRemove, MsgSetFinalize, MsgSetArtworkAdd, MsgSetStoryAdd, MsgBoosterPackBuy, MsgSellOfferCreate, MsgSellOfferBuy, MsgSellOfferRemove, MsgCardRaritySet, MsgCouncilResponseCommit, MsgCouncilResponseReveal, MsgCouncilRestart, MsgMatchConfirm, MsgProfileCardSet, MsgProfileWebsiteSet, MsgProfileBioSet, MsgBoosterPackOpen, MsgBoosterPackTransfer, MsgSetStoryWriterSet, MsgSetArtistSet, MsgCardVoteMulti, MsgMatchOpen, MsgSetNameSet, MsgProfileAliasSet, MsgEarlyAccessInvite, MsgZealyConnect, MsgEncounterCreate, MsgEncounterDo, MsgEncounterClose, MsgEarlyAccessDisinvite, MsgCardBan, MsgEarlyAccessGrant, MsgSetActivate, MsgCardCopyrightClaim };
+export { MsgUpdateParams, MsgUserCreate, MsgCardSchemeBuy, MsgCardSaveContent, MsgCardVote, MsgCardTransfer, MsgCardDonate, MsgCardArtworkAdd, MsgCardArtistChange, MsgCouncilRegister, MsgCouncilDeregister, MsgMatchReport, MsgCouncilCreate, MsgMatchReporterAppoint, MsgSetCreate, MsgSetCardAdd, MsgSetCardRemove, MsgSetContributorAdd, MsgSetContributorRemove, MsgSetFinalize, MsgSetArtworkAdd, MsgSetStoryAdd, MsgBoosterPackBuy, MsgSellOfferCreate, MsgSellOfferBuy, MsgSellOfferRemove, MsgCardRaritySet, MsgCouncilResponseCommit, MsgCouncilResponseReveal, MsgCouncilRestart, MsgMatchConfirm, MsgProfileCardSet, MsgProfileWebsiteSet, MsgProfileBioSet, MsgBoosterPackOpen, MsgBoosterPackTransfer, MsgSetStoryWriterSet, MsgSetArtistSet, MsgCardVoteMulti, MsgMatchOpen, MsgSetNameSet, MsgProfileAliasSet, MsgEarlyAccessInvite, MsgZealyConnect, MsgEncounterCreate, MsgEncounterEdit, MsgEncounterDo, MsgEncounterClose, MsgEarlyAccessDisinvite, MsgCardBan, MsgEarlyAccessGrant, MsgSetActivate, MsgCardCopyrightClaim };
 
 type sendMsgUpdateParamsParams = {
   value: MsgUpdateParams,
@@ -363,6 +364,12 @@ type sendMsgEncounterCreateParams = {
   memo?: string
 };
 
+type sendMsgEncounterEditParams = {
+  value: MsgEncounterEdit,
+  fee?: StdFee,
+  memo?: string
+};
+
 type sendMsgEncounterDoParams = {
   value: MsgEncounterDo,
   fee?: StdFee,
@@ -584,6 +591,10 @@ type msgZealyConnectParams = {
 
 type msgEncounterCreateParams = {
   value: MsgEncounterCreate,
+};
+
+type msgEncounterEditParams = {
+  value: MsgEncounterEdit,
 };
 
 type msgEncounterDoParams = {
@@ -1274,6 +1285,20 @@ export const txClient = ({ signer, prefix, addr }: TxClientOptions = { addr: "ht
 			}
 		},
 		
+		async sendMsgEncounterEdit({ value, fee, memo }: sendMsgEncounterEditParams): Promise<DeliverTxResponse> {
+			if (!signer) {
+					throw new Error('TxClient:sendMsgEncounterEdit: Unable to sign Tx. Signer is not present.')
+			}
+			try {			
+				const { address } = (await signer.getAccounts())[0]; 
+				const signingClient = await SigningStargateClient.connectWithSigner(addr,signer,{registry, aminoTypes: new AminoAdapter(registry)});
+				let msg = this.msgEncounterEdit({ value: MsgEncounterEdit.fromPartial(value) })
+				return await signingClient.signAndBroadcast(address, [msg], fee ? fee : defaultFee, memo)
+			} catch (e: any) {
+				throw new Error('TxClient:sendMsgEncounterEdit: Could not broadcast Tx: '+ e.message)
+			}
+		},
+		
 		async sendMsgEncounterDo({ value, fee, memo }: sendMsgEncounterDoParams): Promise<DeliverTxResponse> {
 			if (!signer) {
 					throw new Error('TxClient:sendMsgEncounterDo: Unable to sign Tx. Signer is not present.')
@@ -1733,6 +1758,14 @@ export const txClient = ({ signer, prefix, addr }: TxClientOptions = { addr: "ht
 			}
 		},
 		
+		msgEncounterEdit({ value }: msgEncounterEditParams): EncodeObject {
+			try {
+				return { typeUrl: "/cardchain.cardchain.MsgEncounterEdit", value: MsgEncounterEdit.fromPartial( value ) }  
+			} catch (e: any) {
+				throw new Error('TxClient:MsgEncounterEdit: Could not create message: ' + e.message)
+			}
+		},
+		
 		msgEncounterDo({ value }: msgEncounterDoParams): EncodeObject {
 			try {
 				return { typeUrl: "/cardchain.cardchain.MsgEncounterDo", value: MsgEncounterDo.fromPartial( value ) }  
@@ -1818,12 +1851,12 @@ class SDKModule {
 						Council: getStructure(typeCouncil.fromPartial({})),
 						WrapClearResponse: getStructure(typeWrapClearResponse.fromPartial({})),
 						WrapHashResponse: getStructure(typeWrapHashResponse.fromPartial({})),
-						Parameter: getStructure(typeParameter.fromPartial({})),
 						Encounter: getStructure(typeEncounter.fromPartial({})),
 						EncounterWithImage: getStructure(typeEncounterWithImage.fromPartial({})),
 						Image: getStructure(typeImage.fromPartial({})),
 						Match: getStructure(typeMatch.fromPartial({})),
 						MatchPlayer: getStructure(typeMatchPlayer.fromPartial({})),
+						Parameter: getStructure(typeParameter.fromPartial({})),
 						Params: getStructure(typeParams.fromPartial({})),
 						RunningAverage: getStructure(typeRunningAverage.fromPartial({})),
 						SellOffer: getStructure(typeSellOffer.fromPartial({})),
